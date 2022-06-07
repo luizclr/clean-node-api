@@ -1,5 +1,3 @@
-const teste = (): string => {
+export const teste = (): string => {
   return '';
 };
-
-teste();
