@@ -1,3 +1,3 @@
 {
-  "*.ts": ["yarn lint", "yarn test:staged"]
+  "*.ts": ["yarn lint", "yarn test"]
 }
