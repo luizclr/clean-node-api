@@ -8,19 +8,15 @@ describe("Content  Type Middleware", () => {
       res.send("");
     });
 
-    await request(app)
-      .get("/test-json")
-      .expect("content-type", /json/);
+    await request(app).get("/test-json").expect("content-type", /json/);
   });
 
   it("shoud return other content when forced", async () => {
     app.get("/test-xml", (_, res: Response) => {
-      res.type("xml")
+      res.type("xml");
       res.send("");
     });
 
-    await request(app)
-      .get("/test-xml")
-      .expect("content-type", /xml/);
+    await request(app).get("/test-xml").expect("content-type", /xml/);
   });
 });
