@@ -11,3 +11,8 @@ export const serverError = (): HttpResponse => ({
   statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
   body: new ServerError(),
 });
+
+export const ok = (data: any): HttpResponse => ({
+  statusCode: StatusCodes.OK,
+  body: data,
+});
