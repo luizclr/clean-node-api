@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import request from "supertest";
-import app from "../config/app";
+import app from "../../../src/main/config/app";
 
 describe("Body Parser Middleware", () => {
   it("shoud parse body as JSON", async () => {
@@ -8,6 +8,9 @@ describe("Body Parser Middleware", () => {
       res.send(req.body);
     });
 
-    await request(app).post("/test").send({ name: "Luiz" }).expect({ name: "Luiz" });
+    await request(app)
+      .post("/test")
+      .send({ name: "Luiz" })
+      .expect({ name: "Luiz" });
   });
 });

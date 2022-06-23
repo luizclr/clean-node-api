@@ -1,13 +1,17 @@
 import { StatusCodes } from "http-status-codes";
-import { Account } from "../../domain/entities/account";
+import { Account } from "../../../src/domain/entities/account";
 import {
   AddAccount,
   AddAccountModel,
-} from "../../domain/use-cases/add-account";
-import { InvalidParamError, MissingParamError, ServerError } from "../errors";
-import { EmailValidator } from "../protocols/email-validator";
-import { HttpRequest } from "../protocols/http";
-import SignupController from "./signup-controller";
+} from "../../../src/domain/use-cases/add-account";
+import {
+  InvalidParamError,
+  MissingParamError,
+  ServerError,
+} from "../../../src/presentation/errors";
+import { EmailValidator } from "../../../src/presentation/protocols/email-validator";
+import { HttpRequest } from "../../../src/presentation/protocols/http";
+import SignupController from "../../../src/presentation/controllers/signup-controller";
 
 import { faker } from "@faker-js/faker";
 
