@@ -1,10 +1,4 @@
-import { Account } from "../entities/account";
-
-export interface AddAccountModel {
-  name: string;
-  email: string;
-  password: string;
-}
+import { Account, AddAccountModel } from "../entities/account";
 
 export interface AddAccount {
   add(account: AddAccountModel): Promise<Account>;

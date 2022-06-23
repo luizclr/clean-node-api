@@ -1,9 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { Account } from "../../../src/domain/entities/account";
-import {
-  AddAccount,
-  AddAccountModel,
-} from "../../../src/domain/use-cases/add-account";
+import { Account, AddAccountModel } from "../../../src/domain/entities/account";
+import { AddAccount } from "../../../src/domain/use-cases/add-account";
 import {
   InvalidParamError,
   MissingParamError,
@@ -28,7 +25,12 @@ const makeEmailValidator = (): EmailValidator => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add({ name, email, password }: AddAccountModel): Promise<Account> {
-      return new Account(faker.datatype.uuid(), name, email, password);
+      return {
+        id: faker.datatype.uuid(),
+        name,
+        email,
+        password,
+      };
     }
   }
 

@@ -1,8 +1,12 @@
-export class Account {
-  constructor(
-    public readonly id: string,
-    public name: string,
-    public email: string,
-    public password: string
-  ) {}
+export interface Account {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AddAccountModel {
+  name: string;
+  email: string;
+  password: string;
 }
