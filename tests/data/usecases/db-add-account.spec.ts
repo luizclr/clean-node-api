@@ -59,7 +59,7 @@ describe("DbAddAccount use case", () => {
     expect(encryptSpy).toHaveBeenCalledWith(password);
   });
 
-  it("should throw if Encrypter throw an error", () => {
+  it("should throw if Encrypter throws an error", () => {
     // given
     const { encrypterStub, sut } = makeSut();
     jest.spyOn(encrypterStub, "encrypt").mockRejectedValueOnce(new Error());
@@ -98,7 +98,7 @@ describe("DbAddAccount use case", () => {
     });
   });
 
-  it("should throw if AddAccountRepository throw an error", () => {
+  it("should throw if AddAccountRepository throws an error", () => {
     // given
     const { addAccountRepositoryStub, sut } = makeSut();
     jest
