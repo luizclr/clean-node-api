@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { ServerError } from "../errors";
-import { HttpResponse } from "../protocols/http";
+import { ServerError } from "~/presentation/errors";
+import { HttpResponse } from "~/presentation/protocols/http";
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: StatusCodes.BAD_REQUEST,

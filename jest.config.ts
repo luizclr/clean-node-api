@@ -11,6 +11,10 @@ const config: JestConfig.InitialOptions = {
   transform: {
     ".+\\.ts$": "ts-jest",
   },
+  moduleNameMapper: {
+    "~/(.*)": "<rootDir>/src/$1",
+    "#/(.*)": "<rootDir>/tests/$1",
+  },
 };
 
 export default config;
