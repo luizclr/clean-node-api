@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import app from "~/main/config/app";
