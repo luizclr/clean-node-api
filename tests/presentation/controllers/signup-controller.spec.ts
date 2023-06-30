@@ -26,7 +26,7 @@ const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add({ name, email, password }: AddAccountModel): Promise<Account> {
       return {
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         name,
         email,
         password,
@@ -79,7 +79,7 @@ describe("Signup Controller", () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         password: faker.internet.password(),
         passwordConfirmation: "password",
       },
@@ -98,7 +98,7 @@ describe("Signup Controller", () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         passwordConfirmation: "password",
       },
@@ -117,7 +117,7 @@ describe("Signup Controller", () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password: faker.internet.password(),
       },
@@ -139,7 +139,7 @@ describe("Signup Controller", () => {
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password,
         passwordConfirmation: password,
@@ -160,7 +160,7 @@ describe("Signup Controller", () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password: faker.internet.password(),
         passwordConfirmation: faker.internet.password(),
@@ -184,7 +184,7 @@ describe("Signup Controller", () => {
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email,
         password,
         passwordConfirmation: password,
@@ -210,7 +210,7 @@ describe("Signup Controller", () => {
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password,
         passwordConfirmation: password,
@@ -230,7 +230,7 @@ describe("Signup Controller", () => {
     const { sut, addAccountStub } = makeSut();
     const password = faker.internet.password();
     const data = {
-      name: faker.name.firstName(),
+      name: faker.person.firstName(),
       email: faker.internet.email(),
       password,
     };
@@ -255,7 +255,7 @@ describe("Signup Controller", () => {
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password,
         passwordConfirmation: password,
@@ -276,7 +276,7 @@ describe("Signup Controller", () => {
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
       body: {
-        name: faker.name.firstName(),
+        name: faker.person.firstName(),
         email: faker.internet.email(),
         password,
         passwordConfirmation: password,

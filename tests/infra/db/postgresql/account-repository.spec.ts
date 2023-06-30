@@ -19,7 +19,7 @@ describe("Account PostgreSQL Repository", () => {
   it.skip("should return account on success", async () => {
     // given
     const sut = new AccountPgRepository();
-    const name = faker.name.firstName();
+    const name = faker.person.firstName();
     const email = faker.internet.email();
     const password = faker.internet.password();
 

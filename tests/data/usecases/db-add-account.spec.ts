@@ -47,7 +47,7 @@ describe("DbAddAccount use case", () => {
     const encryptSpy = jest.spyOn(encrypterStub, "encrypt");
     const password = faker.internet.password();
     const accountData: AddAccountModel = {
-      name: faker.name.firstName(),
+      name: faker.person.firstName(),
       email: faker.internet.email(),
       password,
     };
@@ -64,7 +64,7 @@ describe("DbAddAccount use case", () => {
     const { encrypterStub, sut } = makeSut();
     jest.spyOn(encrypterStub, "encrypt").mockRejectedValueOnce(new Error());
     const accountData: AddAccountModel = {
-      name: faker.name.firstName(),
+      name: faker.person.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
     };
@@ -105,7 +105,7 @@ describe("DbAddAccount use case", () => {
       .spyOn(addAccountRepositoryStub, "add")
       .mockRejectedValueOnce(new Error());
     const accountData: AddAccountModel = {
-      name: faker.name.firstName(),
+      name: faker.person.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
     };
@@ -120,7 +120,7 @@ describe("DbAddAccount use case", () => {
   it("should return an Account if success", async () => {
     // given
     const { sut } = makeSut();
-    const name = faker.name.firstName();
+    const name = faker.person.firstName();
     const email = faker.internet.email();
     const accountData: AddAccountModel = {
       name,

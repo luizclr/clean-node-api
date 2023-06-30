@@ -4,7 +4,7 @@ import {
   badRequest,
   serverError,
   ok,
-} from "~/presentation/helppers/http-helper";
+} from "~/presentation/helpers/http-helper";
 import { Controller } from "~/presentation/protocols/controller";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";

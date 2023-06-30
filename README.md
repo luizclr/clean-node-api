@@ -6,5 +6,5 @@
 
 ### Requirements
 
-- Install Node v16+
+- Install Node v18+
 - Install PostgreSql v14+
