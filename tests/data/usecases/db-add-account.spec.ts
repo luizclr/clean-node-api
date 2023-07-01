@@ -16,7 +16,6 @@ class AddAccountRepositoryStub implements AddAccountRepository {
       id: "id",
       name,
       email,
-      password: "hashed_password",
     };
 
     return Promise.resolve(account);
@@ -136,7 +135,6 @@ describe("DbAddAccount use case", () => {
       id: "id",
       name,
       email,
-      password: "hashed_password",
     });
   });
 });

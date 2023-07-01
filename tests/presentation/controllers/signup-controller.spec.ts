@@ -24,12 +24,11 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add({ name, email, password }: AddAccountModel): Promise<Account> {
+    async add({ name, email }: AddAccountModel): Promise<Account> {
       return {
         id: faker.string.uuid(),
         name,
         email,
-        password,
       };
     }
   }

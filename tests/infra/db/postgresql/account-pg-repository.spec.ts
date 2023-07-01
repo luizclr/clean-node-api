@@ -1,22 +1,19 @@
 import { faker } from "@faker-js/faker";
-import { newDb } from "pg-mem";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository";
 
+import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
+
 describe("Account PostgreSQL Repository", () => {
-  beforeAll(() => {
-    const db = newDb();
-    db.public.none(`
-      CREATE TABLE test(id text, name varchar(10));
-      INSERT INTO test values ('1', 'Luiz');
-      INSERT INTO test values ('2', 'Dina');
-    `);
-
-    const data = db.public.many(`select * from test`);
-
-    console.log(data);
+  beforeAll(async () => {
+    await knexMem.migrate.latest();
+    await knexMem.seed.run();
   });
 
-  it.skip("should return account on success", async () => {
+  afterAll(async () => {
+    await knexMem.destroy();
+  });
+
+  it("should return account on success", async () => {
     // given
     const sut = new AccountPgRepository();
     const name = faker.person.firstName();
@@ -31,6 +28,5 @@ describe("Account PostgreSQL Repository", () => {
     expect(account.id).toBeTruthy();
     expect(account.name).toBe(name);
     expect(account.email).toBe(email);
-    expect(account.password).toBe(password);
   });
 });
