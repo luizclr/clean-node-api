@@ -7,6 +7,6 @@ app.get("/", (_, res: Response) => {
   res.status(StatusCodes.OK).send({ version: "1.0.0" });
 });
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => console.log(`app running on port ${PORT}...`));

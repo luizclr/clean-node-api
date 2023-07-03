@@ -4,6 +4,7 @@ import {
   badRequest,
   serverError,
   ok,
+  userAlreadyExist,
 } from "~/presentation/helpers/http-helper";
 import { Controller } from "~/presentation/protocols/controller";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
@@ -45,6 +46,10 @@ export default class SignupController implements Controller {
 
       return ok(newAccount);
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "User Already Exist") return userAlreadyExist();
+      }
+      console.error(error);
       return serverError();
     }
   }

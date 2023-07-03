@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { AccountPgRepository } from "~/infra/database/postgresql/account-repository";
-
 import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
+import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
 
 describe("Account PostgreSQL Repository", () => {
   beforeAll(async () => {
@@ -15,7 +14,7 @@ describe("Account PostgreSQL Repository", () => {
 
   it("should return account on success", async () => {
     // given
-    const sut = new AccountPgRepository();
+    const sut = new AccountPgRepository(knexMem);
     const name = faker.person.firstName();
     const email = faker.internet.email();
     const password = faker.internet.password();

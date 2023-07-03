@@ -16,3 +16,10 @@ export const ok = (data: any): HttpResponse => ({
   statusCode: StatusCodes.OK,
   body: data,
 });
+
+export const userAlreadyExist = (): HttpResponse => ({
+  statusCode: StatusCodes.CONFLICT,
+  body: {
+    errorMessage: "E-mail already in use",
+  },
+});
