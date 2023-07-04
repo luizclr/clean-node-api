@@ -204,7 +204,7 @@ describe("Signup Controller", () => {
     // given
     const { sut, emailValidatorStub } = makeSut();
     jest.spyOn(emailValidatorStub, "isValid").mockImplementationOnce(() => {
-      throw new ServerError();
+      throw new ServerError(new Error().stack);
     });
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
@@ -221,7 +221,7 @@ describe("Signup Controller", () => {
 
     // then
     expect(httpResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toEqual(new ServerError(new Error().stack));
   });
 
   it("should call addAccount with correct values", async () => {
@@ -249,7 +249,7 @@ describe("Signup Controller", () => {
     // given
     const { sut, addAccountStub } = makeSut();
     jest.spyOn(addAccountStub, "add").mockImplementationOnce(async () => {
-      return Promise.reject(new ServerError());
+      return Promise.reject(new ServerError(new Error().stack));
     });
     const password = faker.internet.password();
     const httpRequest: HttpRequest = {
@@ -266,10 +266,10 @@ describe("Signup Controller", () => {
 
     // then
     expect(httpResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toEqual(new ServerError(new Error().stack));
   });
 
-  it("should return 200 if accouns data are correct", async () => {
+  it("should return 200 if accounts data are correct", async () => {
     // given
     const { sut } = makeSut();
     const password = faker.internet.password();

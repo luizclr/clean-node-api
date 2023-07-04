@@ -49,8 +49,8 @@ export default class SignupController implements Controller {
       if (error instanceof Error) {
         if (error.message === "User Already Exist") return userAlreadyExist();
       }
-      console.error(error);
-      return serverError();
+
+      return serverError(error.stack);
     }
   }
 }

@@ -36,7 +36,15 @@ describe("LogControllerDecorator", () => {
     };
 
     // when
-    await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
     expect(handleSpy).toBeCalledWith(httpRequest);
+    expect(httpResponse).toEqual({
+      statusCode: StatusCodes.OK,
+      body: {
+        name: "name",
+      },
+    });
   });
 });
