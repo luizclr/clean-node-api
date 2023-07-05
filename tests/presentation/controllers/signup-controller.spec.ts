@@ -36,6 +36,18 @@ const makeAddAccount = (): AddAccount => {
   return new AddAccountStub();
 };
 
+const makeHttpRequest = (): HttpRequest => {
+  const password = faker.internet.password();
+  return {
+    body: {
+      name: faker.person.firstName(),
+      email: faker.internet.email(),
+      password,
+      passwordConfirmation: password,
+    },
+  };
+};
+
 type sutTypes = {
   sut: SignupController;
   emailValidatorStub: EmailValidator;
@@ -135,15 +147,7 @@ describe("Signup Controller", () => {
   it("should return 400 if e-mail is not valid", async () => {
     // given
     const { sut, emailValidatorStub } = makeSut();
-    const password = faker.internet.password();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password,
-        passwordConfirmation: password,
-      },
-    };
+    const httpRequest = makeHttpRequest();
     jest.spyOn(emailValidatorStub, "isValid").mockReturnValueOnce(false);
 
     // when
@@ -154,7 +158,7 @@ describe("Signup Controller", () => {
     expect(httpResponse.body).toEqual(new InvalidParamError("email"));
   });
 
-  it("should return 400 if passwords are diferent", async () => {
+  it("should return 400 if passwords are different", async () => {
     // given
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
@@ -206,15 +210,7 @@ describe("Signup Controller", () => {
     jest.spyOn(emailValidatorStub, "isValid").mockImplementationOnce(() => {
       throw new ServerError(new Error().stack);
     });
-    const password = faker.internet.password();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password,
-        passwordConfirmation: password,
-      },
-    };
+    const httpRequest = makeHttpRequest();
 
     // when
     const httpResponse = await sut.handle(httpRequest);
@@ -227,22 +223,17 @@ describe("Signup Controller", () => {
   it("should call addAccount with correct values", async () => {
     // given
     const { sut, addAccountStub } = makeSut();
-    const password = faker.internet.password();
-    const data = {
-      name: faker.person.firstName(),
-      email: faker.internet.email(),
-      password,
-    };
-    const httpRequest: HttpRequest = {
-      body: { ...data, passwordConfirmation: password },
-    };
+    const httpRequest = makeHttpRequest();
     const addSpy = jest.spyOn(addAccountStub, "add");
+    const {
+      body: { name, email, password },
+    } = httpRequest;
 
     // when
     await sut.handle(httpRequest);
 
     // then
-    expect(addSpy).toHaveBeenLastCalledWith(data);
+    expect(addSpy).toHaveBeenLastCalledWith({ name, email, password });
   });
 
   it("should return 500 if AddAccount throws an error", async () => {
@@ -251,15 +242,7 @@ describe("Signup Controller", () => {
     jest.spyOn(addAccountStub, "add").mockImplementationOnce(async () => {
       return Promise.reject(new ServerError(new Error().stack));
     });
-    const password = faker.internet.password();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password,
-        passwordConfirmation: password,
-      },
-    };
+    const httpRequest = makeHttpRequest();
 
     // when
     const httpResponse = await sut.handle(httpRequest);
@@ -272,15 +255,7 @@ describe("Signup Controller", () => {
   it("should return 200 if accounts data are correct", async () => {
     // given
     const { sut } = makeSut();
-    const password = faker.internet.password();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password,
-        passwordConfirmation: password,
-      },
-    };
+    const httpRequest = makeHttpRequest();
 
     // when
     const httpResponse = await sut.handle(httpRequest);
