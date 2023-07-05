@@ -11,6 +11,11 @@ import { HttpRequest } from "~/presentation/protocols/http";
 import SignupController from "~/presentation/controllers/signup-controller";
 
 import { faker } from "@faker-js/faker";
+import {
+  badRequest,
+  ok,
+  serverError,
+} from "~/presentation/helpers/http-helper";
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -23,10 +28,11 @@ const makeEmailValidator = (): EmailValidator => {
 };
 
 const makeAddAccount = (): AddAccount => {
+  const id = faker.string.uuid();
   class AddAccountStub implements AddAccount {
     async add({ name, email }: AddAccountModel): Promise<Account> {
       return {
-        id: faker.string.uuid(),
+        id,
         name,
         email,
       };
@@ -36,13 +42,13 @@ const makeAddAccount = (): AddAccount => {
   return new AddAccountStub();
 };
 
-const makeHttpRequest = (): HttpRequest => {
+const makeHttpRequest = (hasSamePasswords = true): HttpRequest => {
   const password = faker.internet.password();
   return {
     body: {
       name: faker.person.firstName(),
       email: faker.internet.email(),
-      password,
+      password: hasSamePasswords ? password : faker.internet.password(),
       passwordConfirmation: password,
     },
   };
@@ -69,78 +75,55 @@ describe("Signup Controller", () => {
   it("should return 400 if no name is not provided", async () => {
     // given
     const { sut } = makeSut();
-    const httpRequest: HttpRequest = {
-      body: {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        passwordConfirmation: "password",
-      },
-    };
+    const httpRequest = makeHttpRequest();
+    delete httpRequest.body.name;
 
     // when
     const httpResponse = await sut.handle(httpRequest);
 
     // then
     expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("name"));
+    expect(httpResponse).toEqual(badRequest(new MissingParamError("name")));
   });
 
   it("should return 400 if no e-mail is not provided", async () => {
     // given
     const { sut } = makeSut();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        password: faker.internet.password(),
-        passwordConfirmation: "password",
-      },
-    };
+    const httpRequest = makeHttpRequest();
+    delete httpRequest.body.email;
 
     // when
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("email"));
+    expect(httpResponse).toEqual(badRequest(new MissingParamError("email")));
   });
 
   it("should return 400 if password is not provided", async () => {
     // given
     const { sut } = makeSut();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        passwordConfirmation: "password",
-      },
-    };
+    const httpRequest = makeHttpRequest();
+    delete httpRequest.body.password;
 
     // when
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("password"));
+    expect(httpResponse).toEqual(badRequest(new MissingParamError("password")));
   });
 
   it("should return 400 if password confirmation is not provided", async () => {
     // given
     const { sut } = makeSut();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      },
-    };
+    const httpRequest = makeHttpRequest();
+    delete httpRequest.body.passwordConfirmation;
 
     // when
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(
-      new MissingParamError("passwordConfirmation")
+    expect(httpResponse).toEqual(
+      badRequest(new MissingParamError("passwordConfirmation"))
     );
   });
 
@@ -154,45 +137,27 @@ describe("Signup Controller", () => {
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new InvalidParamError("email"));
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError("email")));
   });
 
   it("should return 400 if passwords are different", async () => {
     // given
     const { sut } = makeSut();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        passwordConfirmation: faker.internet.password(),
-      },
-    };
+    const httpRequest = makeHttpRequest(false);
 
     // when
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(
-      new InvalidParamError("passwordConfirmation")
+    expect(httpResponse).toEqual(
+      badRequest(new InvalidParamError("passwordConfirmation"))
     );
   });
 
   it("should call EmailValidator with correct e-mail", async () => {
     // given
     const { sut, emailValidatorStub } = makeSut();
-    const email = faker.internet.email();
-    const password = faker.internet.password();
-    const httpRequest: HttpRequest = {
-      body: {
-        name: faker.person.firstName(),
-        email,
-        password,
-        passwordConfirmation: password,
-      },
-    };
+    const httpRequest = makeHttpRequest();
     const isValidSpy = jest
       .spyOn(emailValidatorStub, "isValid")
       .mockReturnValueOnce(false);
@@ -201,14 +166,16 @@ describe("Signup Controller", () => {
     await sut.handle(httpRequest);
 
     // then
-    expect(isValidSpy).toHaveBeenCalledWith(email);
+    expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email);
   });
 
   it("should return 500 if EmailValidator throws an error", async () => {
     // given
     const { sut, emailValidatorStub } = makeSut();
+    const stack = "fake_stack";
+    const error = new ServerError(stack);
     jest.spyOn(emailValidatorStub, "isValid").mockImplementationOnce(() => {
-      throw new ServerError(new Error().stack);
+      throw error;
     });
     const httpRequest = makeHttpRequest();
 
@@ -216,8 +183,7 @@ describe("Signup Controller", () => {
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(httpResponse.body).toEqual(new ServerError(new Error().stack));
+    expect(httpResponse).toEqual(serverError(error));
   });
 
   it("should call addAccount with correct values", async () => {
@@ -239,8 +205,10 @@ describe("Signup Controller", () => {
   it("should return 500 if AddAccount throws an error", async () => {
     // given
     const { sut, addAccountStub } = makeSut();
+    const stack = "fake_stack";
+    const error = new ServerError(stack);
     jest.spyOn(addAccountStub, "add").mockImplementationOnce(async () => {
-      return Promise.reject(new ServerError(new Error().stack));
+      return Promise.reject(error);
     });
     const httpRequest = makeHttpRequest();
 
@@ -248,8 +216,7 @@ describe("Signup Controller", () => {
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(httpResponse.body).toEqual(new ServerError(new Error().stack));
+    expect(httpResponse).toEqual(serverError(error));
   });
 
   it("should return 200 if accounts data are correct", async () => {
@@ -261,6 +228,6 @@ describe("Signup Controller", () => {
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse.statusCode).toBe(StatusCodes.OK);
+    expect(httpResponse).toEqual(ok(httpResponse.body));
   });
 });
