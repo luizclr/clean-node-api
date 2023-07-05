@@ -7,9 +7,9 @@ export const badRequest = (error: Error): HttpResponse => ({
   body: error,
 });
 
-export const serverError = (error: Error): HttpResponse => ({
+export const serverError = (error: ServerError): HttpResponse => ({
   statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-  body: new ServerError(error.stack),
+  body: error,
 });
 
 export const ok = (data: any): HttpResponse => ({
@@ -20,6 +20,6 @@ export const ok = (data: any): HttpResponse => ({
 export const accountAlreadyExist = (): HttpResponse => ({
   statusCode: StatusCodes.CONFLICT,
   body: {
-    errorMessage: "E-mail already in use",
+    message: "E-mail already in use",
   },
 });

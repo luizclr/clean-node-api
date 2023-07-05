@@ -1,5 +1,10 @@
 import { AddAccount } from "~/domain/use-cases/add-account";
-import { InvalidParamError, MissingParamError } from "~/presentation/errors";
+import {
+  InvalidParamError,
+  MissingParamError,
+  ServerError,
+} from "~/presentation/errors";
+import { AccountAlreadyExistError } from "~/presentation/errors/account-already-exist-error";
 import {
   badRequest,
   serverError,
@@ -46,12 +51,12 @@ export default class SignupController implements Controller {
 
       return ok(newAccount);
     } catch (error) {
-      if (error instanceof Error) {
-        if (error.message === "Account Already Exist")
-          return accountAlreadyExist();
-      }
+      if (error instanceof AccountAlreadyExistError)
+        return accountAlreadyExist();
 
-      return serverError(error.stack);
+      const newServerError = new ServerError(error.stack);
+
+      return serverError(newServerError);
     }
   }
 }
