@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+
 import { ServerError } from "~/presentation/errors";
 import { HttpResponse } from "~/presentation/protocols/http";
 

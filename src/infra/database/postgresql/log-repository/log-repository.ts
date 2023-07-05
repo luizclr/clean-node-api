@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+
 import { LogErrorRepository } from "~/data/protocols/log-error-repository";
 
 export class LogPgRepository implements LogErrorRepository {

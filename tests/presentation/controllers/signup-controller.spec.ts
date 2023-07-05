@@ -1,4 +1,6 @@
 import { StatusCodes } from "http-status-codes";
+import { faker } from "@faker-js/faker";
+
 import { Account, AddAccountModel } from "~/domain/entities/account";
 import { AddAccount } from "~/domain/use-cases/add-account";
 import {
@@ -9,8 +11,6 @@ import {
 import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest } from "~/presentation/protocols/http";
 import SignupController from "~/presentation/controllers/signup-controller";
-
-import { faker } from "@faker-js/faker";
 import {
   badRequest,
   ok,
@@ -71,6 +71,7 @@ const makeSut = (): sutTypes => {
   };
 };
 
+// eslint-disable-next-line max-lines-per-function
 describe("Signup Controller", () => {
   it("should return 400 if no name is not provided", async () => {
     // given

@@ -1,11 +1,13 @@
-import { makeSutTypes } from "#/main/decorators/log-controller/types";
 import { StatusCodes } from "http-status-codes";
+
 import { LogErrorRepository } from "~/data/protocols/log-error-repository";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import { ServerError } from "~/presentation/errors";
 import { ok, serverError } from "~/presentation/helpers/http-helper";
 import { Controller } from "~/presentation/protocols/controller";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
+
+import { makeSutTypes } from "#/main/decorators/log-controller/types";
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {

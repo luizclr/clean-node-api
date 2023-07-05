@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+
 import { AddAccountRepository } from "~/data/protocols/add-account-repository";
 import { Encrypter } from "~/data/protocols/encrypter";
 import { DbAddAccount } from "~/data/usecases/db-add-account";

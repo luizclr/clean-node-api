@@ -2,11 +2,12 @@ import { Response } from "express";
 import { IBackup } from "pg-mem";
 import request from "supertest";
 
+import app from "~/main/config/app";
+
 import {
   knexMem,
   pgMem,
 } from "#/infra/db/postgresql/helpers/postgresql-helper";
-import app from "~/main/config/app";
 
 describe("SignUp routes", () => {
   let backup: IBackup;

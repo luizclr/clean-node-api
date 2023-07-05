@@ -1,8 +1,8 @@
 import { DataType, newDb } from "pg-mem";
 import { Knex } from "knex";
+import { faker } from "@faker-js/faker";
 
 import knexConfig from "~/../knexfile";
-import { faker } from "@faker-js/faker";
 
 const pgMem = newDb();
 pgMem.registerExtension("uuid-ossp", (schema) => {

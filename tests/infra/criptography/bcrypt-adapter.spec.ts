@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
+
 import { BcryptAdapter } from "~/infra/criptography/bcrypt-adapter";
 
 jest.mock("bcrypt", () => ({

@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
+
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
+
+import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
 
 describe("Account PostgreSQL Repository", () => {
   beforeAll(async () => {

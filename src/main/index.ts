@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
+
 import app from "~/main/config/app";
 
 app.get("/", (_, res: Response) => {
@@ -9,4 +10,5 @@ app.get("/", (_, res: Response) => {
 
 const PORT = process.env.PORT || 8080;
 
+// eslint-disable-next-line no-console
 app.listen(PORT, () => console.log(`app running on port ${PORT}...`));

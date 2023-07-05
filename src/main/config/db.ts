@@ -1,6 +1,9 @@
-import { staticConnection } from "~/../knexfile";
+/* eslint-disable no-console */
 import { Client } from "pg";
+
 import knexInstance from "~/main/config/knex";
+
+import { staticConnection } from "~/../knexfile";
 
 async function createDatabase(): Promise<void> {
   const client = new Client(staticConnection);

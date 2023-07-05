@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+
 import { AddAccountRepository } from "~/data/protocols/add-account-repository";
 import { Account, AddAccountModel } from "~/domain/entities/account";
 import { AccountAlreadyExistError } from "~/presentation/errors/account-already-exist-error";

@@ -1,5 +1,6 @@
-import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
 import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
+
+import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
 
 describe("Log PostgreSQL Repository", () => {
   beforeAll(async () => {

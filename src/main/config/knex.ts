@@ -1,5 +1,7 @@
 import { Knex, knex } from "knex";
+
 import { knexMem } from "#/infra/db/postgresql/helpers/postgresql-helper";
+
 import knexConfig from "~/../knexfile";
 
 const getKnexInstance = (): Knex => {

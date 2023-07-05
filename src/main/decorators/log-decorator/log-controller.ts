@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+
 import { LogErrorRepository } from "~/data/protocols/log-error-repository";
 import { Controller } from "~/presentation/protocols/controller";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
