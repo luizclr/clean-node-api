@@ -4,4 +4,5 @@ import { Controller } from "~/presentation/protocols/controller";
 export type makeSutTypes = {
   sut: LogControllerDecorator;
   controllerStub: Controller;
+  logErrorRepositoryStub: LogErrorRepository;
 };
