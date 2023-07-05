@@ -16,7 +16,7 @@ export class LogControllerDecorator implements Controller {
     const response = await this.controller.handle(httpRequest);
 
     if (response.statusCode === StatusCodes.INTERNAL_SERVER_ERROR) {
-      await this.logErrorRepository.log(response.body.stack);
+      await this.logErrorRepository.logError(response.body.stack);
     }
 
     return response;

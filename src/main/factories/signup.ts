@@ -1,6 +1,7 @@
 import { DbAddAccount } from "~/data/usecases/db-add-account";
 import { BcryptAdapter } from "~/infra/criptography/bcrypt-adapter";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
+import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
 import knexInstance from "~/main/config/knex";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import SignupController from "~/presentation/controllers/signup-controller";
@@ -14,6 +15,7 @@ export const makeSignUpController = (): Controller => {
   const accountPgRepository = new AccountPgRepository(knexInstance);
   const dbAddAccount = new DbAddAccount(bcryptAdapter, accountPgRepository);
   const signupController = new SignupController(emailValidator, dbAddAccount);
+  const logPgRepository = new LogPgRepository(knexInstance);
 
-  return new LogControllerDecorator(signupController);
+  return new LogControllerDecorator(signupController, logPgRepository);
 };
