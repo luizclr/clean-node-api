@@ -1,10 +1,10 @@
 import { DbAddAccount } from "~/data/usecases/db-add-account";
-import { BcryptAdapter } from "~/infra/criptography/bcrypt-adapter";
+import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
 import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
 import knexInstance from "~/main/config/knex";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
-import SignupController from "~/presentation/controllers/signup-controller";
+import SignupController from "~/presentation/controllers/signup/signup-controller";
 import { Controller } from "~/presentation/protocols/controller";
 import { EmailValidatorAdapter } from "~/utils/email-validator-adapter";
 

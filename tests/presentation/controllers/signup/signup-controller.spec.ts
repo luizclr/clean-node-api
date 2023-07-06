@@ -10,7 +10,7 @@ import {
 } from "~/presentation/errors";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest } from "~/presentation/protocols/http";
-import SignupController from "~/presentation/controllers/signup-controller";
+import SignupController from "~/presentation/controllers/signup/signup-controller";
 import {
   badRequest,
   ok,
