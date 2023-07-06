@@ -17,15 +17,7 @@ import {
   serverError,
 } from "~/presentation/helpers/http-helper";
 
-const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(_email: string): boolean {
-      return true;
-    }
-  }
-
-  return new EmailValidatorStub();
-};
+import makeEmailValidator from "#/test-utils/make-email-validator";
 
 const makeAddAccount = (): AddAccount => {
   const id = faker.string.uuid();

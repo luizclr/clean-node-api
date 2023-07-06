@@ -9,11 +9,7 @@ import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
 
 export class LoginController implements Controller {
-  private readonly emailValidator: EmailValidator;
-
-  constructor(emailValidator: EmailValidator) {
-    this.emailValidator = emailValidator;
-  }
+  constructor(private readonly emailValidator: EmailValidator) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
