@@ -1,6 +1,6 @@
 import { Authentication } from "~/domain/use-cases/authentication/authentication";
 import { AuthResponse } from "~/domain/use-cases/authentication/types";
-import { GetAccountByEmailRepository } from "~/data/protocols/get-account-by-email-repository";
+import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
 
 export class DbAuthentication implements Authentication {
   constructor(

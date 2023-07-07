@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { GetAccountByEmailRepository } from "~/data/protocols/get-account-by-email-repository";
+import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
 import { DbAuthentication } from "~/data/usecases/authentication/db-authentication";
 import { AccountWithPass } from "~/domain/entities/account";
 

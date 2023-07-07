@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { LogErrorRepository } from "~/data/protocols/log-error-repository";
+import { LogErrorRepository } from "~/data/protocols/db/log-error-repository";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import { ServerError } from "~/presentation/errors";
 import { ok, serverError } from "~/presentation/helpers/http-helper";
