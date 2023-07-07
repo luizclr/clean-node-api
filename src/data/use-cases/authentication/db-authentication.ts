@@ -1,16 +1,18 @@
 import { Authentication } from "~/domain/use-cases/authentication/authentication";
-import { AuthResponse } from "~/domain/use-cases/authentication/types";
 import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
 import { HashComparer } from "~/data/protocols/cryptography/hash-comparer";
+import { TokenGenerator } from "~/data/protocols/cryptography/token-generator";
 
 export class DbAuthentication implements Authentication {
   constructor(
     private readonly getAccountByEmailRepository: GetAccountByEmailRepository,
-    private readonly hashComparer: HashComparer
+    private readonly hashComparer: HashComparer,
+    private readonly tokenGenerator: TokenGenerator
   ) {}
 
-  async auth(email: string, password: string): Promise<AuthResponse> {
+  async auth(email: string, password: string): Promise<string> {
     const account = await this.getAccountByEmailRepository.get(email);
+    if (!account) return null;
 
     const comparison = await this.hashComparer.compare(
       password,
@@ -18,8 +20,9 @@ export class DbAuthentication implements Authentication {
     );
     if (!comparison) return null;
 
-    return {
-      accessToken: "",
-    };
+    const accessToken = await this.tokenGenerator.generate(account.id);
+    if (!accessToken) return null;
+
+    return accessToken;
   }
 }

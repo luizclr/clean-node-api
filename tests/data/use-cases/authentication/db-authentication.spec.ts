@@ -4,18 +4,21 @@ import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-
 import { DbAuthentication } from "~/data/use-cases/authentication/db-authentication";
 import { AccountWithPass } from "~/domain/entities/account";
 import { HashComparer } from "~/data/protocols/cryptography/hash-comparer";
+import { TokenGenerator } from "~/data/protocols/cryptography/token-generator";
 
 import { makeSutTypes } from "#/data/use-cases/authentication/types";
 
+const id = faker.string.uuid();
 const email = faker.internet.email();
 const password = faker.string.alphanumeric(20);
 const hashedPassword = faker.string.alphanumeric(20);
+const token = faker.string.alphanumeric(20);
 
 const makeGetAccountByEmailRepositoryStub = (): GetAccountByEmailRepository => {
   class GetAccountByEmailRepositoryStub implements GetAccountByEmailRepository {
     async get(email: string): Promise<AccountWithPass> {
       return {
-        id: faker.string.uuid(),
+        id,
         name: faker.person.firstName(),
         email,
         password: hashedPassword,
@@ -36,15 +39,32 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub();
 };
 
+const makeTokenGenerator = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate(_id: string): Promise<string> {
+      return token;
+    }
+  }
+
+  return new TokenGeneratorStub();
+};
+
 const makeSut = (): makeSutTypes => {
   const getAccountByEmailRepositoryStub = makeGetAccountByEmailRepositoryStub();
   const hashComparerStub = makeHashComparer();
+  const tokenGeneratorStub = makeTokenGenerator();
   const sut = new DbAuthentication(
     getAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   );
 
-  return { sut, getAccountByEmailRepositoryStub, hashComparerStub };
+  return {
+    sut,
+    getAccountByEmailRepositoryStub,
+    hashComparerStub,
+    tokenGeneratorStub,
+  };
 };
 
 describe("DbAuthentication use case", () => {
@@ -100,5 +120,56 @@ describe("DbAuthentication use case", () => {
 
     // then
     await expect(accessToken).toBeNull();
+  });
+
+  it("should call TokenGenerator with correct id", async () => {
+    // given
+    const { sut, tokenGeneratorStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenGeneratorStub, "generate");
+
+    // when
+    await sut.auth(email, password);
+
+    // then
+    expect(generateSpy).toHaveBeenCalledWith(id);
+  });
+
+  it("should throw if TokenGenerator throws", async () => {
+    // given
+    const { sut, tokenGeneratorStub } = makeSut();
+    jest
+      .spyOn(tokenGeneratorStub, "generate")
+      .mockReturnValueOnce(Promise.reject(new Error()));
+
+    // when
+    const promise = sut.auth(email, password);
+
+    // then
+    await expect(promise).rejects.toThrow();
+  });
+
+  it("should return null if TokenGenerator returns false", async () => {
+    // given
+    const { sut, tokenGeneratorStub } = makeSut();
+    jest
+      .spyOn(tokenGeneratorStub, "generate")
+      .mockReturnValueOnce(Promise.resolve(null));
+
+    // when
+    const accessToken = await sut.auth(email, password);
+
+    // then
+    await expect(accessToken).toBeNull();
+  });
+
+  it("should generate correct accessToken", async () => {
+    // given
+    const { sut } = makeSut();
+
+    // when
+    const accessToken = await sut.auth(email, password);
+
+    // then
+    await expect(accessToken).toBe(token);
   });
 });
