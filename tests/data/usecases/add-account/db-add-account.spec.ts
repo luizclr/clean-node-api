@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import { AddAccountRepository } from "~/data/protocols/add-account-repository";
 import { Encrypter } from "~/data/protocols/encrypter";
-import { DbAddAccount } from "~/data/usecases/db-add-account";
+import { DbAddAccount } from "~/data/usecases/add-acount/db-add-account";
 import { Account, AddAccountModel } from "~/domain/entities/account";
 
 class EncrypterStub implements Encrypter {

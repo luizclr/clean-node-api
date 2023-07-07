@@ -1,4 +1,4 @@
-import { AddAccount } from "~/domain/use-cases/add-account";
+import { AddAccount } from "~/domain/use-cases/add-account/add-account";
 import {
   InvalidParamError,
   MissingParamError,

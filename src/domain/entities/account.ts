@@ -9,3 +9,10 @@ export interface AddAccountModel {
   email: string;
   password: string;
 }
+
+export interface AccountWithPass {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}

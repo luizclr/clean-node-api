@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { faker } from "@faker-js/faker";
 
 import { Account, AddAccountModel } from "~/domain/entities/account";
-import { AddAccount } from "~/domain/use-cases/add-account";
+import { AddAccount } from "~/domain/use-cases/add-account/add-account";
 import {
   InvalidParamError,
   MissingParamError,
