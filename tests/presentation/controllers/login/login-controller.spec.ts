@@ -2,23 +2,30 @@ import { faker } from "@faker-js/faker";
 import { StatusCodes } from "http-status-codes";
 
 import { LoginController } from "~/presentation/controllers/login/login-controller";
-import { InvalidParamError, MissingParamError } from "~/presentation/errors";
-import { badRequest } from "~/presentation/helpers/http-helper";
+import {
+  InvalidParamError,
+  MissingParamError,
+  ServerError,
+} from "~/presentation/errors";
+import { badRequest, serverError } from "~/presentation/helpers/http-helper";
 import { HttpRequest } from "~/presentation/protocols/http";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
+import { Authentication } from "~/domain/use-cases/authentication";
 
 import makeEmailValidator from "#/test-utils/make-email-validator";
 
 type MakeSutType = {
   sut: LoginController;
   emailValidatorStub: EmailValidator;
+  authenticationStub: Authentication;
 };
 
 const makeSut = (): MakeSutType => {
   const emailValidatorStub = makeEmailValidator();
-  const sut = new LoginController(emailValidatorStub);
+  const authenticationStub = makeAuthentication();
+  const sut = new LoginController(emailValidatorStub, authenticationStub);
 
-  return { sut, emailValidatorStub };
+  return { sut, emailValidatorStub, authenticationStub };
 };
 
 const makeHttpRequest = (): HttpRequest => {
@@ -30,6 +37,16 @@ const makeHttpRequest = (): HttpRequest => {
   };
 
   return httpRequest;
+};
+
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth(_email: string, _password: string): Promise<string> {
+      return faker.string.alphanumeric(20);
+    }
+  }
+
+  return new AuthenticationStub();
 };
 
 describe("Login Controller", () => {
@@ -86,5 +103,39 @@ describe("Login Controller", () => {
 
     // then
     expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email);
+  });
+
+  it("should return 500 if EmailValidator throws an error", async () => {
+    // given
+    const { sut, emailValidatorStub } = makeSut();
+    const stack = "fake_stack";
+    const error = new ServerError(stack);
+    jest.spyOn(emailValidatorStub, "isValid").mockImplementationOnce(() => {
+      throw error;
+    });
+    const httpRequest = makeHttpRequest();
+
+    // when
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
+    expect(httpResponse).toEqual(serverError(error));
+  });
+
+  it("should call Authentication with correct values", async () => {
+    // given
+    const { sut, authenticationStub } = makeSut();
+    const httpRequest = makeHttpRequest();
+    const authSpy = jest.spyOn(authenticationStub, "auth");
+
+    // when
+    const {
+      body: { token },
+    } = await sut.handle(httpRequest);
+
+    // then
+    const { email, password } = httpRequest.body;
+    expect(authSpy).toHaveBeenCalledWith(email, password);
+    expect(token).toBeTruthy();
   });
 });
