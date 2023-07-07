@@ -12,10 +12,13 @@ export class DbAuthentication implements Authentication {
   async auth(email: string, password: string): Promise<AuthResponse> {
     const account = await this.getAccountByEmailRepository.get(email);
 
-    await this.hashComparer.compare(password, account.password);
+    const comparison = await this.hashComparer.compare(
+      password,
+      account.password
+    );
+    if (!comparison) return null;
 
     return {
-      success: false,
       accessToken: "",
     };
   }
