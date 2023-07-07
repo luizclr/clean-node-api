@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 
 import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
-import { DbAuthentication } from "~/data/usecases/authentication/db-authentication";
+import { DbAuthentication } from "~/data/use-cases/authentication/db-authentication";
 import { AccountWithPass } from "~/domain/entities/account";
 
-import { makeSutTypes } from "#/data/usecases/authentication/types";
+import { makeSutTypes } from "#/data/use-cases/authentication/types";
 
 const email = faker.internet.email();
 const password = faker.string.alphanumeric(20);

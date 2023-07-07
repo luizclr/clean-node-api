@@ -1,4 +1,4 @@
-import { DbAddAccount } from "~/data/usecases/add-account/db-add-account";
+import { DbAddAccount } from "~/data/use-cases/add-account/db-add-account";
 import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
 import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
