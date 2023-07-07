@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { DbAddAccount } from "~/data/use-cases/add-account/db-add-account";
 
 import { SutTypes } from "#/data/use-cases/add-account/types";
-import { makeEncrypterStub } from "#/test-utils/factories/make-encrypter";
+import { makeHasherStub } from "#/test-utils/factories/make-hasher";
 import { makeAddAccountRepositoryStub } from "#/test-utils/factories/make-add-account-repository";
 import { makeAddAccountModel } from "#/test-utils/factories/make-add-account-model";
 
@@ -11,35 +11,35 @@ const id = faker.string.uuid();
 const hashedPassword = faker.string.alphanumeric(20);
 
 const makeSut = (): SutTypes => {
-  const encrypterStub = makeEncrypterStub(hashedPassword);
+  const hasherStub = makeHasherStub(hashedPassword);
   const addAccountRepositoryStub = makeAddAccountRepositoryStub(id);
 
   return {
-    encrypterStub,
+    hasherStub,
     addAccountRepositoryStub,
-    sut: new DbAddAccount(encrypterStub, addAccountRepositoryStub),
+    sut: new DbAddAccount(hasherStub, addAccountRepositoryStub),
   };
 };
 
 describe("DbAddAccount use case", () => {
-  describe("Encrypter", () => {
-    it("should call Encrypter with correct password", async () => {
+  describe("Hasher", () => {
+    it("should call Hasher with correct password", async () => {
       // given
-      const { encrypterStub, sut } = makeSut();
-      const encryptSpy = jest.spyOn(encrypterStub, "encrypt");
+      const { hasherStub, sut } = makeSut();
+      const hashSpy = jest.spyOn(hasherStub, "hash");
       const accountData = makeAddAccountModel();
 
       // when
       await sut.add(accountData);
 
       // then
-      expect(encryptSpy).toHaveBeenCalledWith(accountData.password);
+      expect(hashSpy).toHaveBeenCalledWith(accountData.password);
     });
 
-    it("should throw if Encrypter throws an error", () => {
+    it("should throw if Hasher throws an error", () => {
       // given
-      const { encrypterStub, sut } = makeSut();
-      jest.spyOn(encrypterStub, "encrypt").mockRejectedValueOnce(new Error());
+      const { hasherStub, sut } = makeSut();
+      jest.spyOn(hasherStub, "hash").mockRejectedValueOnce(new Error());
       const accountData = makeAddAccountModel();
 
       // when

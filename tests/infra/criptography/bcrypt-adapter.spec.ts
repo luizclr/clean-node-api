@@ -23,7 +23,7 @@ describe("Bcrypt Adapter", () => {
     const password = faker.internet.password();
 
     // when
-    await sut.encrypt(password);
+    await sut.hash(password);
 
     //then
     expect(hashSpy).toHaveBeenCalledWith(password, salt);
@@ -35,7 +35,7 @@ describe("Bcrypt Adapter", () => {
     const password = faker.internet.password();
 
     // when
-    const hashedPassword = await sut.encrypt(password);
+    const hashedPassword = await sut.hash(password);
 
     //then
     expect(hashedPassword).toBe("hash");
