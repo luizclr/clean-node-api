@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes";
 
-import { LogErrorRepository } from "~/data/protocols/db/log-error-repository";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import { ServerError } from "~/presentation/errors";
 import { ok, serverError } from "~/presentation/helpers/http-helper";
@@ -8,6 +7,7 @@ import { Controller } from "~/presentation/protocols/controller";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
 
 import { makeSutTypes } from "#/main/decorators/log-controller/types";
+import { makeLogErrorRepository } from "#/test-utils/factories/make-log-error-repository";
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -27,17 +27,6 @@ class ControllerStub implements Controller {
     return Promise.resolve(httpResponse);
   }
 }
-
-const makeLogErrorRepository = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError(_stack: string): Promise<void> {
-      return Promise.resolve();
-    }
-  }
-  const logErrorRepositoryStub = new LogErrorRepositoryStub();
-
-  return logErrorRepositoryStub;
-};
 
 const makeSut = (): makeSutTypes => {
   const controllerStub = new ControllerStub();

@@ -1,14 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import { faker } from "@faker-js/faker";
 
-import { Account, AddAccountModel } from "~/domain/entities/account";
-import { AddAccount } from "~/domain/use-cases/add-account/add-account";
 import {
   InvalidParamError,
   MissingParamError,
   ServerError,
 } from "~/presentation/errors";
-import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest } from "~/presentation/protocols/http";
 import SignupController from "~/presentation/controllers/signup/signup-controller";
 import {
@@ -17,22 +14,11 @@ import {
   serverError,
 } from "~/presentation/helpers/http-helper";
 
-import makeEmailValidator from "#/test-utils/make-email-validator";
+import makeEmailValidator from "#/test-utils/factories/make-email-validator";
+import { makeAddAccount } from "#/test-utils/factories/make-add-account";
+import { sutTypes } from "#/presentation/controllers/signup/types";
 
-const makeAddAccount = (): AddAccount => {
-  const id = faker.string.uuid();
-  class AddAccountStub implements AddAccount {
-    async add({ name, email }: AddAccountModel): Promise<Account> {
-      return {
-        id,
-        name,
-        email,
-      };
-    }
-  }
-
-  return new AddAccountStub();
-};
+const id = faker.string.uuid();
 
 const makeHttpRequest = (hasSamePasswords = true): HttpRequest => {
   const password = faker.internet.password();
@@ -46,15 +32,9 @@ const makeHttpRequest = (hasSamePasswords = true): HttpRequest => {
   };
 };
 
-type sutTypes = {
-  sut: SignupController;
-  emailValidatorStub: EmailValidator;
-  addAccountStub: AddAccount;
-};
-
 const makeSut = (): sutTypes => {
   const emailValidatorStub = makeEmailValidator();
-  const addAccountStub = makeAddAccount();
+  const addAccountStub = makeAddAccount(id);
 
   return {
     sut: new SignupController(emailValidatorStub, addAccountStub),

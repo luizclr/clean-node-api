@@ -14,23 +14,16 @@ import {
   unauthorized,
 } from "~/presentation/helpers/http-helper";
 import { HttpRequest } from "~/presentation/protocols/http";
-import { EmailValidator } from "~/presentation/protocols/email-validator";
-import { Authentication } from "~/domain/use-cases/authentication/authentication";
-import { AuthResponse } from "~/domain/use-cases/authentication/types";
 
-import makeEmailValidator from "#/test-utils/make-email-validator";
-
-type MakeSutType = {
-  sut: LoginController;
-  emailValidatorStub: EmailValidator;
-  authenticationStub: Authentication;
-};
+import makeEmailValidator from "#/test-utils/factories/make-email-validator";
+import { makeAuthentication } from "#/test-utils/factories/make-authentication";
+import { MakeSutType } from "#/presentation/controllers/login/types";
 
 const validToken = faker.string.alphanumeric(20);
 
 const makeSut = (): MakeSutType => {
   const emailValidatorStub = makeEmailValidator();
-  const authenticationStub = makeAuthentication();
+  const authenticationStub = makeAuthentication(validToken);
   const sut = new LoginController(emailValidatorStub, authenticationStub);
 
   return { sut, emailValidatorStub, authenticationStub };
@@ -45,19 +38,6 @@ const makeHttpRequest = (): HttpRequest => {
   };
 
   return httpRequest;
-};
-
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth(_email: string, _password: string): Promise<AuthResponse> {
-      return {
-        success: true,
-        accessToken: validToken,
-      };
-    }
-  }
-
-  return new AuthenticationStub();
 };
 
 // eslint-disable-next-line max-lines-per-function
@@ -153,9 +133,7 @@ describe("Login Controller", () => {
     const { sut, authenticationStub } = makeSut();
     jest
       .spyOn(authenticationStub, "auth")
-      .mockReturnValueOnce(
-        Promise.resolve({ success: false, accessToken: "" })
-      );
+      .mockReturnValueOnce(Promise.resolve(null));
     const httpRequest = makeHttpRequest();
 
     // when
