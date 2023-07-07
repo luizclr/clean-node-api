@@ -3,8 +3,8 @@ import {
   InvalidParamError,
   MissingParamError,
   ServerError,
+  AccountAlreadyExistError,
 } from "~/presentation/errors";
-import { AccountAlreadyExistError } from "~/presentation/errors/account-already-exist-error";
 import {
   badRequest,
   serverError,

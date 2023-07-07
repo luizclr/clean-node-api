@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { ServerError } from "~/presentation/errors";
+import { ServerError, UnauthorizedError } from "~/presentation/errors";
 import { HttpResponse } from "~/presentation/protocols/http";
 
 export const badRequest = (error: Error): HttpResponse => ({
@@ -11,6 +11,11 @@ export const badRequest = (error: Error): HttpResponse => ({
 export const serverError = (error: ServerError): HttpResponse => ({
   statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
   body: error,
+});
+
+export const unauthorized = (message?: string): HttpResponse => ({
+  statusCode: StatusCodes.UNAUTHORIZED,
+  body: new UnauthorizedError(message),
 });
 
 export const ok = (data: any): HttpResponse => ({

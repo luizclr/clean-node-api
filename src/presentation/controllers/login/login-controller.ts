@@ -3,11 +3,13 @@ import {
   InvalidParamError,
   MissingParamError,
   ServerError,
+  UnauthorizedError,
 } from "~/presentation/errors";
 import {
   badRequest,
   ok,
   serverError,
+  unauthorized,
 } from "~/presentation/helpers/http-helper";
 import { Controller } from "~/presentation/protocols/controller";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
@@ -35,8 +37,12 @@ export class LoginController implements Controller {
       }
 
       const token = await this.authentication.auth(email, password);
+
       return ok({ token });
     } catch (error) {
+      if (error instanceof UnauthorizedError)
+        return unauthorized("Invalid credentials");
+
       const newServerError = new ServerError(error.stack);
       return serverError(newServerError);
     }
