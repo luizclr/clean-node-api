@@ -54,6 +54,7 @@ const makeAuthentication = (): Authentication => {
   return new AuthenticationStub();
 };
 
+// eslint-disable-next-line max-lines-per-function
 describe("Login Controller", () => {
   it("should return 400 if no e-mail is not provided", async () => {
     // given
@@ -144,7 +145,7 @@ describe("Login Controller", () => {
     expect(token).toBeTruthy();
   });
 
-  it.only("should return 401 if credentials are invalid", async () => {
+  it("should return 401 if credentials are invalid", async () => {
     // given
     const { sut, authenticationStub } = makeSut();
     jest.spyOn(authenticationStub, "auth").mockImplementationOnce(() => {
@@ -157,5 +158,22 @@ describe("Login Controller", () => {
 
     // then
     expect(httpResponse).toEqual(unauthorized("Invalid credentials"));
+  });
+
+  it("should return 500 if authentication throws", async () => {
+    // given
+    const { sut, authenticationStub } = makeSut();
+    const stack = "fake_stack";
+    const error = new ServerError(stack);
+    jest.spyOn(authenticationStub, "auth").mockImplementationOnce(() => {
+      return Promise.reject(error);
+    });
+    const httpRequest = makeHttpRequest();
+
+    // when
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
+    expect(httpResponse).toEqual(serverError(error));
   });
 });
