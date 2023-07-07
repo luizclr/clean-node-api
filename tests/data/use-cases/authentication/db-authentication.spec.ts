@@ -5,6 +5,7 @@ import { DbAuthentication } from "~/data/use-cases/authentication/db-authenticat
 import { AccountWithPass } from "~/domain/entities/account";
 import { HashComparer } from "~/data/protocols/cryptography/hash-comparer";
 import { TokenGenerator } from "~/data/protocols/cryptography/token-generator";
+import { UpdateAccessTokenRepository } from "~/data/protocols/db/update-access-token-repository";
 
 import { makeSutTypes } from "#/data/use-cases/authentication/types";
 
@@ -49,14 +50,26 @@ const makeTokenGenerator = (): TokenGenerator => {
   return new TokenGeneratorStub();
 };
 
+const makeUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
+  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+    async update(_id: string, _token: string): Promise<void> {
+      return;
+    }
+  }
+
+  return new UpdateAccessTokenRepositoryStub();
+};
+
 const makeSut = (): makeSutTypes => {
   const getAccountByEmailRepositoryStub = makeGetAccountByEmailRepositoryStub();
   const hashComparerStub = makeHashComparer();
   const tokenGeneratorStub = makeTokenGenerator();
+  const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepositoryStub();
   const sut = new DbAuthentication(
     getAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub
   );
 
   return {
@@ -64,6 +77,7 @@ const makeSut = (): makeSutTypes => {
     getAccountByEmailRepositoryStub,
     hashComparerStub,
     tokenGeneratorStub,
+    updateAccessTokenRepositoryStub,
   };
 };
 
@@ -171,5 +185,17 @@ describe("DbAuthentication use case", () => {
 
     // then
     await expect(accessToken).toBe(token);
+  });
+
+  it("should call updateAccessTokenRepository with correct values", async () => {
+    // given
+    const { sut, updateAccessTokenRepositoryStub } = makeSut();
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, "update");
+
+    // when
+    await sut.auth(email, password);
+
+    // then
+    await expect(updateSpy).toHaveBeenCalledWith(id, token);
   });
 });
