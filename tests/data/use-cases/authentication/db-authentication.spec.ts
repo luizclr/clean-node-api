@@ -1,69 +1,28 @@
 import { faker } from "@faker-js/faker";
 
-import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
 import { DbAuthentication } from "~/data/use-cases/authentication/db-authentication";
-import { AccountWithPass } from "~/domain/entities/account";
-import { HashComparer } from "~/data/protocols/cryptography/hash-comparer";
-import { TokenGenerator } from "~/data/protocols/cryptography/token-generator";
-import { UpdateAccessTokenRepository } from "~/data/protocols/db/update-access-token-repository";
 
 import { makeSutTypes } from "#/data/use-cases/authentication/types";
+import { makeHashComparer } from "#/test-utils/factories/make-hash-comparer";
+import { makeTokenGenerator } from "#/test-utils/factories/make-token-generator";
+import { makeUpdateAccessTokenRepositoryStub } from "#/test-utils/factories/make-update-access-token-repository";
+import { makeGetAccountByEmailRepositoryStub } from "#/test-utils/factories/make-get-account-by-email-repository";
 
 const id = faker.string.uuid();
+const name = faker.person.firstName();
 const email = faker.internet.email();
 const password = faker.string.alphanumeric(20);
 const hashedPassword = faker.string.alphanumeric(20);
 const token = faker.string.alphanumeric(20);
 
-const makeGetAccountByEmailRepositoryStub = (): GetAccountByEmailRepository => {
-  class GetAccountByEmailRepositoryStub implements GetAccountByEmailRepository {
-    async get(email: string): Promise<AccountWithPass> {
-      return {
-        id,
-        name: faker.person.firstName(),
-        email,
-        password: hashedPassword,
-      };
-    }
-  }
-
-  return new GetAccountByEmailRepositoryStub();
-};
-
-const makeHashComparer = (): HashComparer => {
-  class HashComparerStub implements HashComparer {
-    async compare(_value: string, _hash: string): Promise<boolean> {
-      return true;
-    }
-  }
-
-  return new HashComparerStub();
-};
-
-const makeTokenGenerator = (): TokenGenerator => {
-  class TokenGeneratorStub implements TokenGenerator {
-    async generate(_id: string): Promise<string> {
-      return token;
-    }
-  }
-
-  return new TokenGeneratorStub();
-};
-
-const makeUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async update(_id: string, _token: string): Promise<void> {
-      return;
-    }
-  }
-
-  return new UpdateAccessTokenRepositoryStub();
-};
-
 const makeSut = (): makeSutTypes => {
-  const getAccountByEmailRepositoryStub = makeGetAccountByEmailRepositoryStub();
+  const getAccountByEmailRepositoryStub = makeGetAccountByEmailRepositoryStub(
+    id,
+    name,
+    hashedPassword
+  );
   const hashComparerStub = makeHashComparer();
-  const tokenGeneratorStub = makeTokenGenerator();
+  const tokenGeneratorStub = makeTokenGenerator(token);
   const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepositoryStub();
   const sut = new DbAuthentication(
     getAccountByEmailRepositoryStub,
