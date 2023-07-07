@@ -81,6 +81,7 @@ const makeSut = (): makeSutTypes => {
   };
 };
 
+// eslint-disable-next-line max-lines-per-function
 describe("DbAuthentication use case", () => {
   it("should call GetAccountByEmailRepository with correct e-mail", async () => {
     // given
@@ -197,5 +198,19 @@ describe("DbAuthentication use case", () => {
 
     // then
     await expect(updateSpy).toHaveBeenCalledWith(id, token);
+  });
+
+  it("should throw if updateAccessTokenRepository throws", async () => {
+    // given
+    const { sut, updateAccessTokenRepositoryStub } = makeSut();
+    jest
+      .spyOn(updateAccessTokenRepositoryStub, "update")
+      .mockReturnValueOnce(Promise.reject(new Error()));
+
+    // when
+    const promise = sut.auth(email, password);
+
+    // then
+    await expect(promise).rejects.toThrow();
   });
 });
