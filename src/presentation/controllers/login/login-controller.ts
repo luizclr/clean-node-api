@@ -1,9 +1,8 @@
-import { Authentication } from "~/domain/use-cases/authentication";
+import { Authentication } from "~/domain/use-cases/authentication/authentication";
 import {
   InvalidParamError,
   MissingParamError,
   ServerError,
-  UnauthorizedError,
 } from "~/presentation/errors";
 import {
   badRequest,
@@ -36,13 +35,14 @@ export class LoginController implements Controller {
         return badRequest(new InvalidParamError("email"));
       }
 
-      const token = await this.authentication.auth(email, password);
+      const { success, accessToken } = await this.authentication.auth(
+        email,
+        password
+      );
+      if (!success) return unauthorized("Invalid credentials");
 
-      return ok({ token });
+      return ok({ accessToken });
     } catch (error) {
-      if (error instanceof UnauthorizedError)
-        return unauthorized("Invalid credentials");
-
       const newServerError = new ServerError(error.stack);
       return serverError(newServerError);
     }
