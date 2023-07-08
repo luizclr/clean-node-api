@@ -3,9 +3,15 @@ import bcrypt from "bcrypt";
 
 import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter";
 
+const password = faker.internet.password();
+const hashedPassword = faker.string.alphanumeric(20);
+
 jest.mock("bcrypt", () => ({
   async hash(): Promise<string> {
-    return Promise.resolve("hash");
+    return Promise.resolve(hashedPassword);
+  },
+  async compare(): Promise<boolean> {
+    return Promise.resolve(true);
   },
 }));
 
@@ -16,28 +22,83 @@ const makeSut = (): BcryptAdapter => {
 };
 
 describe("Bcrypt Adapter", () => {
-  it("should call bcrypt with correct values", async () => {
-    // given;
-    const sut = makeSut();
-    const hashSpy = jest.spyOn(bcrypt, "hash");
-    const password = faker.internet.password();
+  describe("hash", () => {
+    it("should call hash with correct values", async () => {
+      // given;
+      const sut = makeSut();
+      const hashSpy = jest.spyOn(bcrypt, "hash");
+      const password = faker.internet.password();
 
-    // when
-    await sut.hash(password);
+      // when
+      await sut.hash(password);
 
-    //then
-    expect(hashSpy).toHaveBeenCalledWith(password, salt);
+      //then
+      expect(hashSpy).toHaveBeenCalledWith(password, salt);
+    });
+
+    it("should return a valid hash on hash success", async () => {
+      // given;
+      const sut = makeSut();
+      const password = faker.internet.password();
+
+      // when
+      const returnedHashedPassword = await sut.hash(password);
+
+      //then
+      expect(returnedHashedPassword).toBe(hashedPassword);
+    });
   });
 
-  it("should return a hash on success", async () => {
-    // given;
-    const sut = makeSut();
-    const password = faker.internet.password();
+  describe("compare", () => {
+    it("should call compare with correct values", async () => {
+      // given;
+      const sut = makeSut();
+      const compareSpy = jest.spyOn(bcrypt, "compare");
 
-    // when
-    const hashedPassword = await sut.hash(password);
+      // when
+      await sut.compare(password, hashedPassword);
 
-    //then
-    expect(hashedPassword).toBe("hash");
+      //then
+      expect(compareSpy).toHaveBeenCalledWith(password, hashedPassword);
+    });
+
+    it("should return true when compare succeeds", async () => {
+      // given;
+      const sut = makeSut();
+
+      // when
+      const isValid = await sut.compare(password, hashedPassword);
+
+      //then
+      expect(isValid).toBe(true);
+    });
+
+    it("should return false when compare fails", async () => {
+      // given;
+      const sut = makeSut();
+      jest
+        .spyOn(bcrypt, "compare")
+        .mockImplementationOnce(() => Promise.resolve(false));
+
+      // when
+      const isValid = await sut.compare(password, hashedPassword);
+
+      //then
+      expect(isValid).toBe(false);
+    });
+
+    it("should throw if compare throws", async () => {
+      // given;
+      const sut = makeSut();
+      jest
+        .spyOn(bcrypt, "compare")
+        .mockImplementationOnce(() => Promise.reject(new Error()));
+
+      // when
+      const promise = sut.compare(password, hashedPassword);
+
+      //then
+      expect(promise).rejects.toThrow();
+    });
   });
 });
