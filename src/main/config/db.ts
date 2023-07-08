@@ -21,11 +21,8 @@ async function createDatabase(): Promise<void> {
 
 async function runMigrations(): Promise<void> {
   try {
-    const migrations = await knexInstance.select().from("knex_migrations");
-    if (!migrations.length) {
-      await knexInstance.migrate.latest();
-      console.log("Migrations: Done!");
-    }
+    await knexInstance.migrate.latest();
+    console.log("Migrations: Done!");
   } catch (error: unknown) {
     console.error("Error during migrations:", error);
     throw error;

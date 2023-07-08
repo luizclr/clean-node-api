@@ -1,5 +1,5 @@
 import { DbAddAccount } from "~/data/use-cases/add-account/db-add-account";
-import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter";
+import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter/bcrypt-adapter";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
 import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
 import knexInstance from "~/main/config/knex";

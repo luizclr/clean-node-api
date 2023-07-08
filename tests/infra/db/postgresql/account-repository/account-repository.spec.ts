@@ -11,6 +11,7 @@ import {
 
 describe("Account PostgreSQL Repository", () => {
   let backup: IBackup;
+  const fakeJwt = faker.string.alphanumeric(20);
   const name = faker.person.firstName();
   const email = faker.internet.email();
   const password = faker.internet.password();
@@ -75,6 +76,26 @@ describe("Account PostgreSQL Repository", () => {
 
       // then
       expect(account).toBeUndefined();
+    });
+  });
+
+  describe("updateToken", () => {
+    it("should update the account on updateAccessToken success", async () => {
+      // given
+      const sut = new AccountPgRepository(knexMem);
+      const [{ id }] = await knexMem("accounts")
+        .insert(addAccount)
+        .returning(["id"]);
+
+      // when
+      await sut.updateToken(id, fakeJwt);
+      const { accessToken } = await knexMem("accounts")
+        .first()
+        .select("accessToken")
+        .where("id", id);
+
+      // then
+      expect(accessToken).toBe(fakeJwt);
     });
   });
 });

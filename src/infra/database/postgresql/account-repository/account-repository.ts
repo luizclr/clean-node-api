@@ -2,6 +2,7 @@ import { Knex } from "knex";
 
 import { AddAccountRepository } from "~/data/protocols/db/add-account-repository";
 import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
+import { UpdateAccessTokenRepository } from "~/data/protocols/db/update-access-token-repository";
 import {
   Account,
   AccountWithPass,
@@ -10,7 +11,10 @@ import {
 import { AccountAlreadyExistError } from "~/presentation/errors";
 
 export class AccountPgRepository
-  implements AddAccountRepository, GetAccountByEmailRepository
+  implements
+    AddAccountRepository,
+    GetAccountByEmailRepository,
+    UpdateAccessTokenRepository
 {
   constructor(private readonly knexInstance: Knex) {}
 
@@ -32,5 +36,11 @@ export class AccountPgRepository
       .first();
 
     return account;
+  }
+
+  async updateToken(id: string, token: string): Promise<void> {
+    await this.knexInstance("accounts")
+      .update("accessToken", token)
+      .where("id", id);
   }
 }
