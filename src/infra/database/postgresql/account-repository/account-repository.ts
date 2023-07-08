@@ -1,32 +1,36 @@
 import { Knex } from "knex";
 
 import { AddAccountRepository } from "~/data/protocols/db/add-account-repository";
-import { Account, AddAccountModel } from "~/domain/entities/account";
+import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
+import {
+  Account,
+  AccountWithPass,
+  AddAccountModel,
+} from "~/domain/entities/account";
 import { AccountAlreadyExistError } from "~/presentation/errors";
 
-export class AccountPgRepository implements AddAccountRepository {
-  private knexInstance: Knex;
-
-  constructor(knexInstance: Knex) {
-    this.knexInstance = knexInstance;
-  }
+export class AccountPgRepository
+  implements AddAccountRepository, GetAccountByEmailRepository
+{
+  constructor(private readonly knexInstance: Knex) {}
 
   public async add(account: AddAccountModel): Promise<Account> {
-    if (await this.accountAlreadyExist(account.email))
+    if (await this.getByEmail(account.email))
       return Promise.reject(new AccountAlreadyExistError());
 
     const [result] = await this.knexInstance<Account>("accounts")
       .insert(account)
       .returning(["id", "name", "email"]);
 
-    return new Promise((resolve) => resolve(result));
+    return result;
   }
 
-  private async accountAlreadyExist(email: string): Promise<boolean> {
-    const [accountAlreadyExist] = await this.knexInstance<Account>(
-      "accounts"
-    ).where("email", email);
+  async getByEmail(email: string): Promise<AccountWithPass> {
+    const account = await this.knexInstance<AccountWithPass>("accounts")
+      .select(["id", "name", "email", "password"])
+      .where("email", email)
+      .first();
 
-    return !!accountAlreadyExist;
+    return account;
   }
 }
