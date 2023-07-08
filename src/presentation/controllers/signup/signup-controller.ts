@@ -16,13 +16,11 @@ import { EmailValidator } from "~/presentation/protocols/email-validator";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
 
 export default class SignupController implements Controller {
-  private readonly emailValidator: EmailValidator;
-  private readonly addAccount: AddAccount;
+  constructor(
+    private readonly emailValidator: EmailValidator,
+    private readonly addAccount: AddAccount
+  ) {}
 
-  constructor(emailValidator: EmailValidator, addAccount: AddAccount) {
-    this.emailValidator = emailValidator;
-    this.addAccount = addAccount;
-  }
   public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = [
