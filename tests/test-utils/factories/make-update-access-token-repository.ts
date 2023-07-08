@@ -5,7 +5,7 @@ export const makeUpdateAccessTokenRepositoryStub =
     class UpdateAccessTokenRepositoryStub
       implements UpdateAccessTokenRepository
     {
-      async update(_id: string, _token: string): Promise<void> {
+      async updateToken(_id: string, _token: string): Promise<void> {
         return;
       }
     }

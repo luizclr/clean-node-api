@@ -7,7 +7,7 @@ export const makeGetAccountByEmailRepositoryStub = (
   password: string
 ): GetAccountByEmailRepository => {
   class GetAccountByEmailRepositoryStub implements GetAccountByEmailRepository {
-    async get(email: string): Promise<AccountWithPass> {
+    async getByEmail(email: string): Promise<AccountWithPass> {
       return {
         id,
         name,

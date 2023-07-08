@@ -47,7 +47,7 @@ describe("DbAuthentication use case", () => {
       // given
       const { sut, getAccountByEmailRepositoryStub } = makeSut();
       jest
-        .spyOn(getAccountByEmailRepositoryStub, "get")
+        .spyOn(getAccountByEmailRepositoryStub, "getByEmail")
         .mockReturnValueOnce(Promise.reject(new Error()));
 
       // when
@@ -61,7 +61,7 @@ describe("DbAuthentication use case", () => {
       // given
       const { sut, getAccountByEmailRepositoryStub } = makeSut();
       jest
-        .spyOn(getAccountByEmailRepositoryStub, "get")
+        .spyOn(getAccountByEmailRepositoryStub, "getByEmail")
         .mockReturnValueOnce(Promise.reject(new Error()));
 
       // when
@@ -75,7 +75,7 @@ describe("DbAuthentication use case", () => {
       // given
       const { sut, getAccountByEmailRepositoryStub } = makeSut();
       jest
-        .spyOn(getAccountByEmailRepositoryStub, "get")
+        .spyOn(getAccountByEmailRepositoryStub, "getByEmail")
         .mockReturnValueOnce(Promise.resolve(null));
 
       // when
@@ -185,7 +185,10 @@ describe("DbAuthentication use case", () => {
     it("should call updateAccessTokenRepository with correct values", async () => {
       // given
       const { sut, updateAccessTokenRepositoryStub } = makeSut();
-      const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, "update");
+      const updateSpy = jest.spyOn(
+        updateAccessTokenRepositoryStub,
+        "updateToken"
+      );
 
       // when
       await sut.auth(email, password);
@@ -198,7 +201,7 @@ describe("DbAuthentication use case", () => {
       // given
       const { sut, updateAccessTokenRepositoryStub } = makeSut();
       jest
-        .spyOn(updateAccessTokenRepositoryStub, "update")
+        .spyOn(updateAccessTokenRepositoryStub, "updateToken")
         .mockReturnValueOnce(Promise.reject(new Error()));
 
       // when
