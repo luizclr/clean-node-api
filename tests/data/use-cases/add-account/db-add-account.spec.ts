@@ -3,9 +3,9 @@ import { faker } from "@faker-js/faker";
 import { DbAddAccount } from "~/data/use-cases/add-account/db-add-account";
 
 import { SutTypes } from "#/data/use-cases/add-account/types";
-import { makeHasherStub } from "#/test-utils/factories/make-hasher";
-import { makeAddAccountRepositoryStub } from "#/test-utils/factories/make-add-account-repository";
-import { makeAddAccountModel } from "#/test-utils/factories/make-add-account-model";
+import { makeHasherStub } from "#/utils/factories/make-hasher";
+import { makeAddAccountRepositoryStub } from "#/utils/factories/make-add-account-repository";
+import { makeAddAccountModel } from "#/utils/factories/make-add-account-model";
 
 const id = faker.string.uuid();
 const hashedPassword = faker.string.alphanumeric(20);

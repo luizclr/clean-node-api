@@ -7,7 +7,7 @@ import { Controller } from "~/presentation/protocols/controller";
 import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
 
 import { makeSutTypes } from "#/main/decorators/log-controller/types";
-import { makeLogErrorRepository } from "#/test-utils/factories/make-log-error-repository";
+import { makeLogErrorRepository } from "#/utils/factories/make-log-error-repository";
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {

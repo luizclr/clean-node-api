@@ -3,10 +3,10 @@ import { faker } from "@faker-js/faker";
 import { DbAuthentication } from "~/data/use-cases/authentication/db-authentication";
 
 import { makeSutTypes } from "#/data/use-cases/authentication/types";
-import { makeHashComparer } from "#/test-utils/factories/make-hash-comparer";
-import { makeEncrypter } from "#/test-utils/factories/make-encrypter";
-import { makeUpdateAccessTokenRepositoryStub } from "#/test-utils/factories/make-update-access-token-repository";
-import { makeGetAccountByEmailRepositoryStub } from "#/test-utils/factories/make-get-account-by-email-repository";
+import { makeHashComparer } from "#/utils/factories/make-hash-comparer";
+import { makeEncrypter } from "#/utils/factories/make-encrypter";
+import { makeUpdateAccessTokenRepositoryStub } from "#/utils/factories/make-update-access-token-repository";
+import { makeGetAccountByEmailRepositoryStub } from "#/utils/factories/make-get-account-by-email-repository";
 
 const id = faker.string.uuid();
 const name = faker.person.firstName();

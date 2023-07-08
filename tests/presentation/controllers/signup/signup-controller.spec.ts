@@ -14,8 +14,8 @@ import {
   serverError,
 } from "~/presentation/helpers/http-helper";
 
-import makeEmailValidator from "#/test-utils/factories/make-email-validator";
-import { makeAddAccount } from "#/test-utils/factories/make-add-account";
+import makeEmailValidator from "#/utils/factories/make-email-validator";
+import { makeAddAccount } from "#/utils/factories/make-add-account";
 import { sutTypes } from "#/presentation/controllers/signup/types";
 
 const id = faker.string.uuid();

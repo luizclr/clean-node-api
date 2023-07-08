@@ -15,8 +15,8 @@ import {
 } from "~/presentation/helpers/http-helper";
 import { HttpRequest } from "~/presentation/protocols/http";
 
-import makeEmailValidator from "#/test-utils/factories/make-email-validator";
-import { makeAuthentication } from "#/test-utils/factories/make-authentication";
+import makeEmailValidator from "#/utils/factories/make-email-validator";
+import { makeAuthentication } from "#/utils/factories/make-authentication";
 import { MakeSutType } from "#/presentation/controllers/login/types";
 
 const validToken = faker.string.alphanumeric(20);

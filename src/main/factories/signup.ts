@@ -2,11 +2,11 @@ import { DbAddAccount } from "~/data/use-cases/add-account/db-add-account";
 import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter/bcrypt-adapter";
 import { AccountPgRepository } from "~/infra/database/postgresql/account-repository/account-repository";
 import { LogPgRepository } from "~/infra/database/postgresql/log-repository/log-repository";
+import { EmailValidatorAdapter } from "~/main/adapters/validators/email-validator-adapter";
 import knexInstance from "~/main/config/knex";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import SignupController from "~/presentation/controllers/signup/signup-controller";
 import { Controller } from "~/presentation/protocols/controller";
-import { EmailValidatorAdapter } from "~/utils/email-validator-adapter";
 
 export const makeSignUpController = (): Controller => {
   const SALT = 12;
