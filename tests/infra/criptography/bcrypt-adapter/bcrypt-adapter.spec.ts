@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
 
-import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter";
+import { BcryptAdapter } from "~/infra/cryptography/bcrypt-adapter/bcrypt-adapter";
 
 const password = faker.internet.password();
 const hashedPassword = faker.string.alphanumeric(20);
