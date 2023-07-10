@@ -138,7 +138,7 @@ describe("DbAuthentication use case", () => {
       await sut.auth(email, password);
 
       // then
-      expect(encryptSpy).toHaveBeenCalledWith(id);
+      expect(encryptSpy).toHaveBeenCalledWith({ id });
     });
 
     it("should throw if Encrypter throws", async () => {

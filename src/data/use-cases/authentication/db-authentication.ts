@@ -22,7 +22,7 @@ export class DbAuthentication implements Authentication {
     );
     if (!comparison) return null;
 
-    const accessToken = await this.encrypter.encrypt(account.id);
+    const accessToken = await this.encrypter.encrypt({ id: account.id });
     if (!accessToken) return null;
 
     await this.updateAccessTokenRepository.updateToken(account.id, accessToken);
