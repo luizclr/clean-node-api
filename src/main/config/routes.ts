@@ -1,11 +1,14 @@
 import fs from "fs";
 import path from "path";
 
-import { Express } from "express";
+import { Express, Router } from "express";
 
 export default (app: Express): void => {
+  const router = Router();
+  app.use("/api", router);
   fs.readdirSync(path.join(__dirname, "..", "routes")).map(async (file) => {
-    const route = (await import(`~/main/routes/${file}`)).default;
-    route(app);
+    if (!file.includes(".map")) {
+      (await import(`../routes/${file}`)).default(router);
+    }
   });
 };

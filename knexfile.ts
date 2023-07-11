@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Knex } from "knex";
 
 export const staticConnection = {
@@ -11,6 +12,7 @@ export const staticConnection = {
 const knexConfig: Record<string, Knex.Config> = {
   development: {
     client: "pg",
+    version: "15.0",
     connection: staticConnection,
     migrations: {
       tableName: "knex_migrations",
@@ -20,7 +22,18 @@ const knexConfig: Record<string, Knex.Config> = {
       directory: `${__dirname}/database/seeds`,
     },
   },
-  production: {},
+  production: {
+    client: "pg",
+    version: "15.0",
+    connection: staticConnection,
+    migrations: {
+      tableName: "knex_migrations",
+      directory: `${__dirname}/../database/migrations`,
+    },
+    seeds: {
+      directory: `${__dirname}/../database/seeds`,
+    },
+  },
 };
 
 export default knexConfig;

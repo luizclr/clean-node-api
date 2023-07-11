@@ -27,7 +27,7 @@ describe("Login routes", () => {
   describe("POST /signup", () => {
     it("should return 200 on signup", async () => {
       await request(app)
-        .post("/signup")
+        .post("/api/signup")
         .send({
           name: "Will Smith",
           email: "will.smith@email.com",
@@ -41,7 +41,7 @@ describe("Login routes", () => {
   describe("POST /login", () => {
     it("should return 200 on login", async () => {
       await request(app)
-        .get("/login")
+        .get("/api/login")
         .send({
           email: "user1@email.com",
           password: "123",

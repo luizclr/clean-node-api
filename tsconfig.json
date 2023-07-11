@@ -15,5 +15,5 @@
       "#/*": ["./tests/*"]
     }
   },
-  "include": ["src", "tests", "database"]
+  "include": ["src", "tests"]
 }
