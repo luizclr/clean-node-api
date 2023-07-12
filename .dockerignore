@@ -1,0 +1,9 @@
+node_modules
+yarn-error.log
+dist
+.github
+.husky
+.dockerignore
+**/.git
+**/.DS_Store
+**/node_modules
