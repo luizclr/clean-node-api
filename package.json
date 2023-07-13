@@ -15,6 +15,7 @@
     "migrate:rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
     "test": "jest --no-cache --passWithNoTests --noStackTrace",
+    "test:ci": "yarn build && yarn test:coverage",
     "test:unit": "yarn test --watch -c jest-unit.config.ts",
     "test:integration": "yarn test --watch -c jest-integration.config.ts --runInBand",
     "test:watch": "yarn test --watch",
