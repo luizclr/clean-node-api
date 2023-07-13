@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { StatusCodes } from "http-status-codes";
 
-import { LoginController } from "~/presentation/controllers/login/login-controller";
+import { LoginController } from "~/presentation/controllers/auth/login/login-controller";
 import {
   InvalidParamError,
   MissingParamError,
@@ -17,7 +17,7 @@ import { HttpRequest } from "~/presentation/protocols/http";
 
 import makeEmailValidator from "#/utils/factories/make-email-validator";
 import { makeAuthentication } from "#/utils/factories/make-authentication";
-import { MakeSutType } from "#/presentation/controllers/login/types";
+import { MakeSutType } from "#/presentation/controllers/auth/login/types";
 
 const validToken = faker.string.alphanumeric(20);
 

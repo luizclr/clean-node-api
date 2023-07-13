@@ -8,7 +8,7 @@ import {
   ServerError,
 } from "~/presentation/errors";
 import { HttpRequest } from "~/presentation/protocols/http";
-import SignupController from "~/presentation/controllers/signup/signup-controller";
+import SignupController from "~/presentation/controllers/auth/signup/signup-controller";
 import {
   badRequest,
   conflict,
@@ -18,7 +18,7 @@ import {
 
 import makeEmailValidator from "#/utils/factories/make-email-validator";
 import { makeAddAccount } from "#/utils/factories/make-add-account";
-import { sutTypes } from "#/presentation/controllers/signup/types";
+import { sutTypes } from "#/presentation/controllers/auth/signup/types";
 import { makeAuthentication } from "#/utils/factories/make-authentication";
 
 const id = faker.string.uuid();

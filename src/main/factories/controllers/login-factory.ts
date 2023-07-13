@@ -2,7 +2,7 @@ import { EmailValidatorAdapter } from "~/infra/validators/email-validator-adapte
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import { makeDbLogErrorRepository } from "~/main/factories/protocols/log-error-repository/db-log-error-repository-factory";
 import { makeDbAuthentication } from "~/main/factories/use-cases/authentication/db-authentication-factory";
-import { LoginController } from "~/presentation/controllers/login/login-controller";
+import { LoginController } from "~/presentation/controllers/auth/login/login-controller";
 import { Controller } from "~/presentation/protocols/controller";
 
 export const makeLoginController = (): Controller => {
