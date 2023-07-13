@@ -8,7 +8,6 @@ import {
   AccountWithPass,
   AddAccountModel,
 } from "~/domain/entities/account";
-import { AccountAlreadyExistError } from "~/presentation/errors";
 
 export class AccountPgRepository
   implements
@@ -19,9 +18,6 @@ export class AccountPgRepository
   constructor(private readonly knexInstance: Knex) {}
 
   public async add(account: AddAccountModel): Promise<Account> {
-    if (await this.getByEmail(account.email))
-      return Promise.reject(new AccountAlreadyExistError());
-
     const [result] = await this.knexInstance<Account>("accounts")
       .insert(account)
       .returning(["id", "name", "email"]);

@@ -1,15 +1,16 @@
 import { AddAccount } from "~/domain/use-cases/add-account/add-account";
+import { Authentication } from "~/domain/use-cases/authentication/authentication";
 import {
+  AccountAlreadyExistError,
   InvalidParamError,
   MissingParamError,
   ServerError,
-  AccountAlreadyExistError,
 } from "~/presentation/errors";
 import {
   badRequest,
   serverError,
   ok,
-  accountAlreadyExist,
+  conflict,
 } from "~/presentation/helpers/http-helper";
 import { Controller } from "~/presentation/protocols/controller";
 import { EmailValidator } from "~/presentation/protocols/email-validator";
@@ -18,7 +19,8 @@ import { HttpRequest, HttpResponse } from "~/presentation/protocols/http";
 export default class SignupController implements Controller {
   constructor(
     private readonly emailValidator: EmailValidator,
-    private readonly addAccount: AddAccount
+    private readonly addAccount: AddAccount,
+    private readonly authentication: Authentication
   ) {}
 
   public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -47,11 +49,12 @@ export default class SignupController implements Controller {
 
       const newAccount = await this.addAccount.add({ name, email, password });
 
-      return ok(newAccount);
-    } catch (error) {
-      if (error instanceof AccountAlreadyExistError)
-        return accountAlreadyExist();
+      if (!newAccount) return conflict(new AccountAlreadyExistError());
 
+      const accessToken = await this.authentication.auth(email, password);
+
+      return ok({ accessToken });
+    } catch (error) {
       const newServerError = new ServerError(error.stack);
 
       return serverError(newServerError);

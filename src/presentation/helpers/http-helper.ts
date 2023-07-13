@@ -23,9 +23,7 @@ export const ok = (data: any): HttpResponse => ({
   body: data,
 });
 
-export const accountAlreadyExist = (): HttpResponse => ({
+export const conflict = (error: Error): HttpResponse => ({
   statusCode: StatusCodes.CONFLICT,
-  body: {
-    message: "E-mail already in use",
-  },
+  body: error,
 });

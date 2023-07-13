@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { faker } from "@faker-js/faker";
 
 import {
+  AccountAlreadyExistError,
   InvalidParamError,
   MissingParamError,
   ServerError,
@@ -10,6 +11,7 @@ import { HttpRequest } from "~/presentation/protocols/http";
 import SignupController from "~/presentation/controllers/signup/signup-controller";
 import {
   badRequest,
+  conflict,
   ok,
   serverError,
 } from "~/presentation/helpers/http-helper";
@@ -17,8 +19,10 @@ import {
 import makeEmailValidator from "#/utils/factories/make-email-validator";
 import { makeAddAccount } from "#/utils/factories/make-add-account";
 import { sutTypes } from "#/presentation/controllers/signup/types";
+import { makeAuthentication } from "#/utils/factories/make-authentication";
 
 const id = faker.string.uuid();
+const validToken = faker.string.alphanumeric(20);
 
 const makeHttpRequest = (hasSamePasswords = true): HttpRequest => {
   const password = faker.internet.password();
@@ -35,11 +39,17 @@ const makeHttpRequest = (hasSamePasswords = true): HttpRequest => {
 const makeSut = (): sutTypes => {
   const emailValidatorStub = makeEmailValidator();
   const addAccountStub = makeAddAccount(id);
+  const authenticationStub = makeAuthentication(validToken);
 
   return {
-    sut: new SignupController(emailValidatorStub, addAccountStub),
+    sut: new SignupController(
+      emailValidatorStub,
+      addAccountStub,
+      authenticationStub
+    ),
     emailValidatorStub,
     addAccountStub,
+    authenticationStub,
   };
 };
 
@@ -201,6 +211,54 @@ describe("Signup Controller", () => {
     const httpResponse = await sut.handle(httpRequest);
 
     // then
-    expect(httpResponse).toEqual(ok(httpResponse.body));
+    expect(httpResponse).toEqual(ok({ accessToken: validToken }));
+  });
+
+  it("should call Authentication with correct values", async () => {
+    // given
+    const { sut, authenticationStub } = makeSut();
+    const httpRequest = makeHttpRequest();
+    const addSpy = jest.spyOn(authenticationStub, "auth");
+    const {
+      body: { email, password },
+    } = httpRequest;
+
+    // when
+    await sut.handle(httpRequest);
+
+    // then
+    expect(addSpy).toHaveBeenLastCalledWith(email, password);
+  });
+
+  it("should return 500 if Authentication throws an error", async () => {
+    // given
+    const { sut, authenticationStub } = makeSut();
+    const stack = "fake_stack";
+    const error = new ServerError(stack);
+    jest.spyOn(authenticationStub, "auth").mockImplementationOnce(() => {
+      throw error;
+    });
+    const httpRequest = makeHttpRequest();
+
+    // when
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
+    expect(httpResponse).toEqual(serverError(error));
+  });
+
+  it("should return 403 if e-mail is already added when add in AddAccount", async () => {
+    // given
+    const { sut, addAccountStub } = makeSut();
+    jest
+      .spyOn(addAccountStub, "add")
+      .mockReturnValueOnce(Promise.resolve(null));
+    const httpRequest = makeHttpRequest();
+
+    // when
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
+    expect(httpResponse).toEqual(conflict(new AccountAlreadyExistError()));
   });
 });
