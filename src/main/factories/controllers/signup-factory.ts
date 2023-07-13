@@ -1,4 +1,4 @@
-import { EmailValidatorAdapter } from "~/main/adapters/validators/email-validator-adapter";
+import { EmailValidatorAdapter } from "~/infra/validators/email-validator-adapter";
 import { LogControllerDecorator } from "~/main/decorators/log-decorator/log-controller";
 import { makeDbLogErrorRepository } from "~/main/factories/protocols/log-error-repository/db-log-error-repository-factory";
 import { makeDbAddAccount } from "~/main/factories/use-cases/add-account/db-add-account-factory";

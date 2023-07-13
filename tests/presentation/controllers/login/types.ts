@@ -1,6 +1,6 @@
 import { Authentication } from "~/domain/use-cases/authentication/authentication";
 import { LoginController } from "~/presentation/controllers/login/login-controller";
-import { EmailValidator } from "~/presentation/protocols/email-validator";
+import { EmailValidator } from "~/data/protocols/validators/email-validator";
 
 export type MakeSutType = {
   sut: LoginController;
