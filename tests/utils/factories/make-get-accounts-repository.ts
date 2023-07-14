@@ -9,7 +9,7 @@ export const makeGetAccountsRepositoryStub = (
   accounts: Account[] = initialAccounts
 ): GetAccountsRepository => {
   class GetAccountsRepositoryStub implements GetAccountsRepository {
-    async get(): Promise<Account[]> {
+    async getAll(): Promise<Account[]> {
       return Promise.resolve(accounts);
     }
   }

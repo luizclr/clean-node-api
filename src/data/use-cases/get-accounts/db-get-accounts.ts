@@ -5,8 +5,8 @@ import { GetAccounts } from "~/domain/use-cases/get-accounts/get-accounts";
 export class DbGetAccounts implements GetAccounts {
   constructor(private readonly getAccountsRepository: GetAccountsRepository) {}
 
-  async get(): Promise<Account[]> {
-    const accounts = await this.getAccountsRepository.get();
+  async getAll(): Promise<Account[]> {
+    const accounts = await this.getAccountsRepository.getAll();
 
     return accounts;
   }

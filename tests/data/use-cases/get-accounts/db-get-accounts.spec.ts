@@ -18,12 +18,12 @@ describe("DbGetAccounts use case", () => {
       // given
       const { getAccountsRepositoryStub, sut } = makeSut();
       jest
-        .spyOn(getAccountsRepositoryStub, "get")
+        .spyOn(getAccountsRepositoryStub, "getAll")
         .mockRejectedValueOnce(new Error());
       // const accountData = makeGetAccounts();
 
       // when
-      const promise = sut.get();
+      const promise = sut.getAll();
 
       // then
       expect(promise).rejects.toThrow();
@@ -33,11 +33,11 @@ describe("DbGetAccounts use case", () => {
       // given
       const { getAccountsRepositoryStub, sut } = makeSut();
       jest
-        .spyOn(getAccountsRepositoryStub, "get")
+        .spyOn(getAccountsRepositoryStub, "getAll")
         .mockReturnValueOnce(Promise.resolve([]));
 
       // when
-      const result = await sut.get();
+      const result = await sut.getAll();
 
       // then
       expect(result.length).toEqual(0);
@@ -48,7 +48,7 @@ describe("DbGetAccounts use case", () => {
       const { sut } = makeSut();
 
       // when
-      const result = await sut.get();
+      const result = await sut.getAll();
 
       // then
       expect(result.length).toEqual(1);
