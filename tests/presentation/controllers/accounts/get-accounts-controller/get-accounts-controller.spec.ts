@@ -1,8 +1,8 @@
 import { ServerError } from "~/presentation/errors";
 import { ok, serverError } from "~/presentation/helpers/http-helper";
-import { GetAccountsController } from "~/presentation/controllers/accounts/get-accounts-controller";
+import { GetAccountsController } from "~/presentation/controllers/accounts/get-accounts-controller/get-accounts-controller";
 
-import { MakeSutType } from "#/presentation/controllers/accounts/types";
+import { MakeSutType } from "#/presentation/controllers/accounts/get-accounts-controller/types";
 import { makeGetAccountsStub } from "#/utils/factories/make-get-accounts";
 import { makeAccount } from "#/utils/factories/make-account";
 
