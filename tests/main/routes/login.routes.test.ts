@@ -8,7 +8,7 @@ import {
   pgMem,
 } from "#/infra/db/postgresql/helpers/postgresql-helper";
 
-describe("Login routes", () => {
+describe("Auth routes", () => {
   let backup: IBackup;
   beforeAll(async () => {
     await knexMem.migrate.latest();
