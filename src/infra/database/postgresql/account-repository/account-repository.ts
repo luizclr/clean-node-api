@@ -2,6 +2,7 @@ import { Knex } from "knex";
 
 import { AddAccountRepository } from "~/data/protocols/db/add-account-repository";
 import { GetAccountByEmailRepository } from "~/data/protocols/db/get-account-by-email-repository";
+import { GetAccountsRepository } from "~/data/protocols/db/get-accounts-repository";
 import { UpdateAccessTokenRepository } from "~/data/protocols/db/update-access-token-repository";
 import {
   Account,
@@ -13,7 +14,8 @@ export class AccountPgRepository
   implements
     AddAccountRepository,
     GetAccountByEmailRepository,
-    UpdateAccessTokenRepository
+    UpdateAccessTokenRepository,
+    GetAccountsRepository
 {
   constructor(private readonly knexInstance: Knex) {}
 
@@ -23,6 +25,16 @@ export class AccountPgRepository
       .returning(["id", "name", "email"]);
 
     return result;
+  }
+
+  async getAll(): Promise<Account[]> {
+    const accounts = await this.knexInstance<Account>("accounts").select([
+      "id",
+      "name",
+      "email",
+    ]);
+
+    return accounts;
   }
 
   async getByEmail(email: string): Promise<AccountWithPass> {

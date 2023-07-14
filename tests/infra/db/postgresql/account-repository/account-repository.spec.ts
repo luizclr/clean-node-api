@@ -9,6 +9,7 @@ import {
   pgMem,
 } from "#/infra/db/postgresql/helpers/postgresql-helper";
 
+// eslint-disable-next-line max-lines-per-function
 describe("Account PostgreSQL Repository", () => {
   let backup: IBackup;
   const fakeJwt = faker.string.alphanumeric(20);
@@ -23,7 +24,6 @@ describe("Account PostgreSQL Repository", () => {
 
   beforeAll(async () => {
     await knexMem.migrate.latest();
-    await knexMem.seed.run();
     backup = pgMem.backup();
   });
 
@@ -96,6 +96,34 @@ describe("Account PostgreSQL Repository", () => {
 
       // then
       expect(accessToken).toBe(fakeJwt);
+    });
+  });
+
+  describe("getAll", () => {
+    it("should return an empty array if there are no items saved", async () => {
+      // given
+      const sut = new AccountPgRepository(knexMem);
+
+      // when
+      const accounts = await sut.getAll();
+
+      // then
+      expect(accounts.length).toEqual(0);
+    });
+
+    it("should return a list pf accounts on success", async () => {
+      // given
+      const sut = new AccountPgRepository(knexMem);
+      await knexMem("accounts").insert(addAccount);
+
+      // when
+      const accounts = await sut.getAll();
+
+      // then
+      expect(accounts.length).toBeTruthy();
+      expect(accounts[0].id).toBeTruthy();
+      expect(accounts[0].name).toBe(name);
+      expect(accounts[0].email).toBe(email);
     });
   });
 });
