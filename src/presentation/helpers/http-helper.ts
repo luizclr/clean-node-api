@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 
 import { ServerError, UnauthorizedError } from "~/presentation/errors";
+import { NotFoundError } from "~/presentation/errors/not-found-error";
 import { HttpResponse } from "~/presentation/protocols/http";
 
 export const badRequest = (error: Error): HttpResponse => ({
@@ -16,6 +17,11 @@ export const serverError = (error: ServerError): HttpResponse => ({
 export const unauthorized = (message?: string): HttpResponse => ({
   statusCode: StatusCodes.UNAUTHORIZED,
   body: new UnauthorizedError(message),
+});
+
+export const notFound = (message?: string): HttpResponse => ({
+  statusCode: StatusCodes.NOT_FOUND,
+  body: new NotFoundError(message),
 });
 
 export const ok = (data: any): HttpResponse => ({
