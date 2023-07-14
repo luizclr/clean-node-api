@@ -126,4 +126,34 @@ describe("Account PostgreSQL Repository", () => {
       expect(accounts[0].email).toBe(email);
     });
   });
+
+  describe("getById", () => {
+    it("should return an account on success", async () => {
+      // given
+      const sut = new AccountPgRepository(knexMem);
+      const [savedAccount] = await knexMem("accounts")
+        .insert(addAccount)
+        .returning(["id", "name", "email"]);
+
+      // when
+      const account = await sut.getById(savedAccount.id);
+
+      // then
+      expect(account.id).toBe(savedAccount.id);
+      expect(account.name).toBe(savedAccount.name);
+      expect(account.email).toBe(savedAccount.email);
+    });
+
+    it("should return undefined if getById fails", async () => {
+      // given
+      const sut = new AccountPgRepository(knexMem);
+      const fakeId = faker.string.uuid();
+
+      // when
+      const account = await sut.getById(fakeId);
+
+      // then
+      expect(account).toBeUndefined();
+    });
+  });
 });
