@@ -1,9 +1,15 @@
 import type { Config as JestConfig } from "@jest/types";
 
 const config: JestConfig.InitialOptions = {
-  roots: ["<rootDir>/tests"],
+  roots: ["<rootDir>/tests", "<rootDir>/src"],
   collectCoverage: true,
-  collectCoverageFrom: ["<rootDir>/src/**/*.ts", "!<rootDir>/src/main/**"],
+  collectCoverageFrom: [
+    "<rootDir>/src/**/*.ts",
+    "!<rootDir>/src/main/index.ts",
+    "!<rootDir>/src/main/config/**",
+    "!<rootDir>/src/domain/**",
+    "!<rootDir>/src/**/protocols/**",
+  ],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   testEnvironment: "node",
