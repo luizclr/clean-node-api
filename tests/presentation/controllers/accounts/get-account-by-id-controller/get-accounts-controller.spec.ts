@@ -1,7 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { StatusCodes } from "http-status-codes";
 
-import { MissingParamError, ServerError } from "~/presentation/errors";
+import {
+  InvalidParamError,
+  MissingParamError,
+  ServerError,
+} from "~/presentation/errors";
 import {
   badRequest,
   notFound,
@@ -14,13 +18,18 @@ import { HttpRequest } from "~/presentation/protocols/http";
 import { MakeSutType } from "#/presentation/controllers/accounts/get-account-by-id-controller/types";
 import { makeAccount } from "#/utils/factories/make-account";
 import { makeGetAccountByIdStub } from "#/utils/factories/make-get-account-by-id";
+import makeUUIDValidator from "#/utils/factories/make-uuid-validator";
 
 const makeSut = (): MakeSutType => {
   const mockAccount = makeAccount();
   const getAccountByIdStub = makeGetAccountByIdStub(mockAccount);
-  const sut = new GetAccountByIdController(getAccountByIdStub);
+  const uuidValidatorStub = makeUUIDValidator();
+  const sut = new GetAccountByIdController(
+    getAccountByIdStub,
+    uuidValidatorStub
+  );
 
-  return { sut, getAccountByIdStub, mockAccount };
+  return { sut, getAccountByIdStub, uuidValidatorStub, mockAccount };
 };
 
 const makeHttpRequest = (id = faker.string.uuid()): HttpRequest => {
@@ -57,6 +66,21 @@ describe("GetAccountById Controller", () => {
     // then
     expect(httpResponse.statusCode).toBe(StatusCodes.BAD_REQUEST);
     expect(httpResponse).toEqual(badRequest(new MissingParamError("id")));
+  });
+
+  it("should return 400 if id is not valid", async () => {
+    // given
+    const { sut, uuidValidatorStub } = makeSut();
+    const httpRequest = makeHttpRequest();
+    jest.spyOn(uuidValidatorStub, "isValid").mockReturnValueOnce(false);
+
+    // when
+    const httpResponse = await sut.handle(httpRequest);
+
+    // then
+    expect(httpResponse).toEqual(
+      badRequest(new InvalidParamError("id - invalid uuid format"))
+    );
   });
 
   it("should return 404 if don't find account", async () => {

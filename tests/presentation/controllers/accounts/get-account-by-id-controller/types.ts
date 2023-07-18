@@ -1,3 +1,4 @@
+import { UUIDValidator } from "~/data/protocols/validators/uuid-validator";
 import { Account } from "~/domain/entities/account";
 import { GetAccountById } from "~/domain/use-cases/get-account-by-id/get-accounts-by-id";
 import { GetAccountByIdController } from "~/presentation/controllers/accounts/get-account-by-id-controller/get-account-by-id-controller";
@@ -5,5 +6,6 @@ import { GetAccountByIdController } from "~/presentation/controllers/accounts/ge
 export type MakeSutType = {
   sut: GetAccountByIdController;
   getAccountByIdStub: GetAccountById;
+  uuidValidatorStub: UUIDValidator;
   mockAccount: Account;
 };

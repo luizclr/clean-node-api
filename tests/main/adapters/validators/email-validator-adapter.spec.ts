@@ -21,7 +21,7 @@ describe("EmailValidator Adapter", () => {
     expect(isValid).toBe(false);
   });
 
-  it("should return false if validator returns true", () => {
+  it("should return true if validator returns true", () => {
     // given
     const sut = new EmailValidatorAdapter();
 
